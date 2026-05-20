@@ -1,0 +1,86 @@
+{
+  "_metadata": {
+    "description": "Effect-size parameters for Monte Carlo health-impact simulation",
+    "project": "MIT LiftLab 2026 — From Nanostores to Classrooms",
+    "version": "1.0",
+    "last_updated": "2026-05-19",
+    "note": "All sigma values derived from published 95% CIs assuming Normal: sigma = (UB - LB) / 3.92"
+  },
+  "intervention_effects": {
+    "nutrition_education_only": {
+      "mean_bmi_change_kg_m2": -0.33,
+      "sigma_bmi_change": 0.112,
+      "ci_lower": -0.55,
+      "ci_upper": -0.11,
+      "source": "Silveira et al. 2013, Preventive Medicine. Meta-analysis of RCTs, N = 8722 children/adolescents",
+      "reference_key": "silveira2013school",
+      "applies_to": "School-based nutrition education, single component"
+    },
+    "physical_activity_only": {
+      "mean_bmi_change_kg_m2": -0.13,
+      "sigma_bmi_change": 0.046,
+      "ci_lower": -0.22,
+      "ci_upper": -0.04,
+      "source": "Cochrane systematic review of school-based interventions",
+      "reference_key": "cochrane_school_bmi",
+      "applies_to": "Physical activity alone"
+    },
+    "physical_activity_plus_nutrition": {
+      "mean_bmi_change_kg_m2": -0.17,
+      "sigma_bmi_change": 0.059,
+      "ci_lower": -0.29,
+      "ci_upper": -0.06,
+      "source": "Cochrane systematic review of school-based interventions",
+      "reference_key": "cochrane_school_bmi",
+      "applies_to": "Combined PA + nutrition (closest to our proposal)"
+    },
+    "adolescent_health_education_zscore": {
+      "mean_bmi_z_change": -0.06,
+      "sigma_z": 0.018,
+      "ci_lower": -0.10,
+      "ci_upper": -0.03,
+      "source": "Brown et al. 2020, BMC Public Health. Adolescents 10-19 years",
+      "reference_key": "brown2020adolescent",
+      "applies_to": "Health education in adolescents specifically"
+    },
+    "long_term_null_robustness": {
+      "mean_bmi_change_kg_m2": 0.00,
+      "sigma_bmi_change": 0.023,
+      "ci_lower": -0.05,
+      "ci_upper": 0.04,
+      "source": "Hodder et al. 2021, Nutrients. Long-term school interventions 6-12 years",
+      "reference_key": "long_term_school_2021",
+      "applies_to": "Robustness check — null result scenario"
+    }
+  },
+  "baseline_population": {
+    "_description": "Starting BMI distribution for simulated cohort, parameterized from ENSANUT Continua 2020-2024",
+    "mean_bmi_age_12": 21.8,
+    "sd_bmi_age_12": 4.1,
+    "overweight_threshold_age_12": 22.5,
+    "obesity_threshold_age_12": 26.0,
+    "annual_bmi_growth_no_intervention_mean": 0.45,
+    "annual_bmi_growth_no_intervention_sd": 0.25,
+    "source": "ENSANUT Continua 2020-2024 derived estimates; WHO BMI-for-age cut-offs"
+  },
+  "simulation_settings": {
+    "cohort_size": 1000,
+    "n_runs_per_scenario": 5000,
+    "horizons_years": [1, 3, 5],
+    "random_seed": 42,
+    "default_adherence_rate": 0.80,
+    "default_intervention_dose_hours_per_week": 1.0
+  },
+  "sensitivity_sweeps": {
+    "adherence_rates": [0.50, 0.60, 0.70, 0.80, 0.90, 1.00],
+    "dose_hours": [0.5, 1.0, 1.5, 2.0, 3.0],
+    "follow_up_years": [1, 2, 3, 5]
+  },
+  "scenarios": [
+    "baseline",
+    "central",
+    "optimistic",
+    "conservative",
+    "null_robustness"
+  ]
+}

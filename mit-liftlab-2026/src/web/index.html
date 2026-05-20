@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Nanostores to Classrooms · MIT LiftLab 2026</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root {
+  --bg:           #fdf8f1;
+  --bg-warm:      #f5ede0;
+  --paper:        #fffdf9;
+  --ink:          #1a1612;
+  --ink-soft:     #4a3f35;
+  --muted:        #8a7d6e;
+  --line:         #d6cab8;
+  --rule:         #1a1612;
+
+  --alarm:        #b8332a;
+  --alarm-soft:   #f5ddd9;
+  --success:      #2d5e3e;
+  --success-soft: #dde9df;
+  --data:         #1d4e89;
+  --data-soft:    #d8e0eb;
+  --gold:         #b8862a;
+
+  --display: 'Fraunces', 'Times New Roman', serif;
+  --sans:    'IBM Plex Sans', system-ui, sans-serif;
+  --mono:    'IBM Plex Mono', 'Courier New', monospace;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ───── Grid / Layout ───── */
+.container { max-width: 1340px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 720px) { .container { padding: 0 20px; } }
+
+.rule { border: 0; border-top: 1px solid var(--ink); margin: 0; }
+.rule-soft { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+/* ───── Top bar ───── */
+.topbar {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 10px 0;
+  text-transform: uppercase;
+}
+.topbar .container { display: flex; justify-content: space-between; align-items: center; }
+.topbar a { color: inherit; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; }
+.topbar a:hover { opacity: 1; }
+.topbar nav { display: flex; gap: 24px; }
+@media (max-width: 720px) { .topbar nav { display: none; } }
+
+/* ───── Hero ───── */
+.hero { padding: 80px 0 100px; position: relative; overflow: hidden; }
+.hero::before {
+  content: '';
+  position: absolute; top: -50px; right: -100px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--alarm-soft) 0%, transparent 70%);
+  z-index: 0; opacity: 0.6;
+}
+.hero .container { position: relative; z-index: 1; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 32px;
+  display: flex; align-items: center; gap: 16px;
+}
+.eyebrow::after {
+  content: ''; flex: 1; max-width: 200px;
+  height: 1px; background: var(--ink);
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 120px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  margin-bottom: 28px;
+  font-variation-settings: 'opsz' 144;
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--alarm);
+}
+.hero h1 .arrow {
+  display: inline-block;
+  font-style: normal;
+  font-weight: 200;
+  color: var(--ink-soft);
+  margin: 0 0.1em;
+}
+
+.hero .lede {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.4;
+  max-width: 780px;
+  color: var(--ink-soft);
+  margin: 32px 0 48px;
+  font-variation-settings: 'opsz' 36;
+}
+
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--ink);
+}
+@media (max-width: 720px) { .meta-row { grid-template-columns: repeat(2, 1fr); } }
+
+.meta-row div { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.meta-row div strong { display: block; font-family: var(--display); font-style: italic; font-weight: 500; font-size: 18px; color: var(--ink); letter-spacing: -0.01em; text-transform: none; margin-top: 6px; }
+
+/* ───── Section headers ───── */
+.section { padding: 100px 0; border-top: 1px solid var(--ink); }
+.section-eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--alarm); margin-bottom: 16px;
+}
+.section h2 {
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  max-width: 900px;
+  font-variation-settings: 'opsz' 72;
+}
+.section h2 em { font-style: italic; color: var(--alarm); }
+.section .section-intro {
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.5; max-width: 740px;
+  color: var(--ink-soft);
+  font-variation-settings: 'opsz' 36;
+}
+
+/* ───── The Problem: data cards ───── */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+  margin-top: 64px;
+  border: 1px solid var(--ink);
+}
+.problem-grid .cell {
+  grid-column: span 3;
+  padding: 36px 28px;
+  border-right: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+  position: relative;
+}
+.problem-grid .cell:nth-child(4n) { border-right: none; }
+.problem-grid .cell:nth-child(n+5) { border-bottom: none; }
+@media (max-width: 900px) {
+  .problem-grid .cell { grid-column: span 6; }
+  .problem-grid .cell:nth-child(2n) { border-right: none; }
+  .problem-grid .cell:nth-child(2n+1) { border-right: 1px solid var(--ink); }
+  .problem-grid .cell:nth-child(n+3) { border-bottom: 1px solid var(--ink); }
+  .problem-grid .cell:nth-child(n+7) { border-bottom: none; }
+}
+@media (max-width: 540px) {
+  .problem-grid .cell { grid-column: span 12; border-right: none !important; border-bottom: 1px solid var(--ink) !important; }
+  .problem-grid .cell:last-child { border-bottom: none !important; }
+}
+.cell-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+}
+.cell-number {
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(54px, 6vw, 84px); line-height: 1;
+  letter-spacing: -0.04em;
+  font-variation-settings: 'opsz' 144;
+  margin-bottom: 12px;
+}
+.cell-number.alarm { color: var(--alarm); }
+.cell-number.data  { color: var(--data); }
+.cell-label {
+  font-family: var(--sans); font-size: 13px; line-height: 1.4;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+.cell-source {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 0.04em; padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+/* ───── Pipeline ───── */
+.pipeline-track {
+  margin-top: 64px;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border: 1px solid var(--ink);
+}
+@media (max-width: 900px) { .pipeline-track { grid-template-columns: 1fr; } }
+.phase {
+  padding: 32px 24px;
+  border-right: 1px solid var(--ink);
+  background: var(--paper);
+  position: relative;
+}
+.phase:last-child { border-right: none; }
+@media (max-width: 900px) {
+  .phase { border-right: none; border-bottom: 1px solid var(--ink); }
+  .phase:last-child { border-bottom: none; }
+}
+.phase-num {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: 64px; line-height: 1; letter-spacing: -0.03em;
+  color: var(--data); margin-bottom: 16px;
+  font-variation-settings: 'opsz' 144;
+}
+.phase h3 {
+  font-family: var(--display); font-weight: 500;
+  font-size: 22px; line-height: 1.15;
+  margin-bottom: 12px;
+  font-variation-settings: 'opsz' 36;
+}
+.phase p {
+  font-size: 14px; color: var(--ink-soft); line-height: 1.45;
+}
+
+/* ───── Chart sections ───── */
+.findings { margin-top: 64px; }
+.findings-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  margin-top: 48px;
+}
+@media (max-width: 900px) { .findings-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+.finding-card {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 32px;
+}
+.finding-card h3 {
+  font-family: var(--display); font-weight: 500;
+  font-size: 22px; margin-bottom: 8px;
+  font-variation-settings: 'opsz' 36;
+}
+.finding-card .finding-sub {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 24px;
+}
+.chart-host { position: relative; height: 280px; margin-bottom: 16px; }
+.finding-takeaway {
+  font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: 16px; line-height: 1.5; color: var(--ink-soft);
+  padding-top: 16px; border-top: 1px solid var(--line);
+  font-variation-settings: 'opsz' 36;
+}
+
+/* ───── Big quote ───── */
+.pull-quote {
+  margin: 80px 0;
+  padding: 56px 48px;
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--ink);
+}
+.pull-quote p {
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(24px, 3vw, 36px); line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-variation-settings: 'opsz' 72;
+}
+.pull-quote p em { color: var(--gold); font-style: italic; }
+.pull-quote .attr {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin-top: 24px;
+}
+
+/* ───── Intervention ───── */
+.intervention-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  margin-top: 64px; border: 1px solid var(--ink);
+}
+@media (max-width: 900px) { .intervention-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .intervention-grid { grid-template-columns: 1fr; } }
+.iv {
+  padding: 32px 24px;
+  border-right: 1px solid var(--ink);
+  background: var(--paper);
+}
+.iv:last-child { border-right: none; }
+@media (max-width: 900px) {
+  .iv:nth-child(2n) { border-right: none; }
+  .iv:nth-child(n+3) { border-top: 1px solid var(--ink); }
+}
+@media (max-width: 540px) {
+  .iv { border-right: none; border-top: 1px solid var(--ink); }
+  .iv:first-child { border-top: none; }
+}
+.iv-letter {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: 48px; line-height: 1; color: var(--success);
+  margin-bottom: 16px; font-variation-settings: 'opsz' 144;
+}
+.iv h3 {
+  font-family: var(--display); font-weight: 500;
+  font-size: 18px; line-height: 1.2;
+  margin-bottom: 12px;
+  font-variation-settings: 'opsz' 36;
+}
+.iv p { font-size: 14px; color: var(--ink-soft); line-height: 1.45; }
+
+/* ───── Simulation ───── */
+.sim-wrap {
+  margin-top: 64px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 40px;
+}
+.sim-chart-host { height: 380px; position: relative; margin-bottom: 32px; }
+
+.sim-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--mono); font-size: 13px;
+}
+.sim-table th, .sim-table td {
+  text-align: left; padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.sim-table th {
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; font-size: 11px;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--ink);
+}
+.sim-table tr:last-child td { border-bottom: none; }
+.sim-table .scen { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 14px; }
+.sim-table .pos { color: var(--success); }
+.sim-table .neg { color: var(--alarm); }
+
+/* ───── Team ───── */
+.team-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  margin-top: 64px; border: 1px solid var(--ink);
+}
+@media (max-width: 720px) { .team-grid { grid-template-columns: 1fr; } }
+.member { padding: 40px 32px; background: var(--paper); border-right: 1px solid var(--ink); }
+.member:last-child { border-right: none; }
+@media (max-width: 720px) { .member { border-right: none; border-top: 1px solid var(--ink); } .member:first-child { border-top: none; } }
+.member h3 { font-family: var(--display); font-weight: 500; font-size: 26px; margin-bottom: 4px; letter-spacing: -0.01em; font-variation-settings: 'opsz' 36; }
+.member .role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--alarm); margin-bottom: 20px; }
+.member p { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+/* ───── Footer ───── */
+.footer { background: var(--ink); color: var(--bg); padding: 80px 0 48px; margin-top: 0; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px; margin-bottom: 64px; }
+@media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; gap: 40px; } }
+.footer h4 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.footer p, .footer li { font-size: 14px; color: rgba(253, 248, 241, 0.7); line-height: 1.7; }
+.footer ul { list-style: none; }
+.footer a { color: rgba(253, 248, 241, 0.7); text-decoration: none; transition: color 0.2s; }
+.footer a:hover { color: var(--gold); }
+.footer .footer-tag {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: 28px; line-height: 1.3; max-width: 480px;
+  color: var(--bg);
+  font-variation-settings: 'opsz' 72;
+}
+.footer .copyright {
+  border-top: 1px solid rgba(253, 248, 241, 0.2);
+  padding-top: 24px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+
+/* ───── Inline citations ───── */
+.cite {
+  font-family: var(--mono); font-size: 0.7em;
+  vertical-align: super; color: var(--data);
+  text-decoration: none;
+}
+
+/* ───── Subtle entrance ───── */
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.rise { animation: rise 0.7s cubic-bezier(.2,.7,.3,1) both; }
+.rise-1 { animation-delay: 0.05s; }
+.rise-2 { animation-delay: 0.15s; }
+.rise-3 { animation-delay: 0.25s; }
+.rise-4 { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="container">
+    <span>MIT LiftLab · 2026</span>
+    <nav>
+      <a href="#problem">Problem</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#findings">Findings</a>
+      <a href="#intervention">Intervention</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#team">Team</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow rise rise-1">Tec de Monterrey · Campus San Luis Potosí · MIT LiftLab 2026</div>
+    <h1 class="rise rise-2">
+      From <em>nanostores</em><br>
+      <span class="arrow">→</span> classrooms.
+    </h1>
+    <p class="lede rise rise-3">
+      A data-driven proposal to strengthen Physical Education and the <em>Vida Saludable</em> articulating axis in Mexican lower-secondary education, in response to a childhood obesity crisis that affects <strong style="color: var(--alarm); font-weight: 600;">40.1 % of adolescents</strong> aged 12–19.
+    </p>
+
+    <div class="meta-row rise rise-4">
+      <div>Project · <strong>Healthy Nanostore</strong></div>
+      <div>Method · <strong>5-Phase Pipeline</strong></div>
+      <div>Validation · <strong>5 Experts</strong></div>
+      <div>Status · <strong>May–June 2026</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="section" id="problem">
+  <div class="container">
+    <div class="section-eyebrow">§01 — The Problem</div>
+    <h2>One of the world's most severe<br>childhood obesity crises<em>.</em></h2>
+    <p class="section-intro">
+      Mexico carries a child and adolescent obesity burden that ranks among the highest globally. The crisis sits at the intersection of three structural realities: an ultraprocessed food environment, a time-scarce labour economy, and an education system whose health-curriculum is underfunded in practice.
+    </p>
+
+    <div class="problem-grid">
+      <div class="cell">
+        <div class="cell-tag">Children 5–11</div>
+        <div class="cell-number alarm">36.6%</div>
+        <div class="cell-label">live with overweight or obesity</div>
+        <div class="cell-source">ENSANUT Continua 2020–2024 · Shamah-Levy et al.</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">Adolescents 12–19</div>
+        <div class="cell-number alarm">40.1%</div>
+        <div class="cell-label">live with overweight or obesity</div>
+        <div class="cell-source">ENSANUT Continua 2020–2024</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">Adolescents w/ obesity</div>
+        <div class="cell-number alarm">10.4M</div>
+        <div class="cell-label">absolute count, ages 12–19</div>
+        <div class="cell-source">SEP Vida Saludable Report 2025</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">Physical inactivity</div>
+        <div class="cell-number alarm">7/10</div>
+        <div class="cell-label">schoolchildren perform no physical activity</div>
+        <div class="cell-source">SEP Vida Saludable Report 2025</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">PE weekly hours</div>
+        <div class="cell-number data">2h</div>
+        <div class="cell-label">in lower-secondary, down from 5h pre-2010</div>
+        <div class="cell-source">SEP Plan de Estudios 2022</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">Vida Saludable status</div>
+        <div class="cell-number data">Axis</div>
+        <div class="cell-label">articulating axis, not a dedicated subject</div>
+        <div class="cell-source">Nueva Escuela Mexicana 2022</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">Mexican nanostores</div>
+        <div class="cell-number data">1.1M</div>
+        <div class="cell-label">primary food access in vulnerable communities</div>
+        <div class="cell-source">INEGI DENUE 2024</div>
+      </div>
+      <div class="cell">
+        <div class="cell-tag">No daily PA</div>
+        <div class="cell-number alarm">53%</div>
+        <div class="cell-label">of minors don't meet WHO PA recommendation</div>
+        <div class="cell-source">ENSANUT 2023</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section class="section" id="pipeline">
+  <div class="container">
+    <div class="section-eyebrow">§02 — Analytical Pipeline</div>
+    <h2>Five phases<em>,</em> one chain of reasoning.</h2>
+    <p class="section-intro">
+      Our work follows a deliberate sequence: descriptive statistics first, then population data, then primary fieldwork, then intervention design, then projection. Each phase tests the assumption that the previous one rests on.
+    </p>
+
+    <div class="pipeline-track">
+      <div class="phase">
+        <div class="phase-num">01</div>
+        <h3>Linear Regression</h3>
+        <p>OLS on state-level data linking nanostore density and child obesity prevalence, controlling for marginalization and urbanization.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">02</div>
+        <h3>Extended Datasets</h3>
+        <p>Behavioural and intake variables (ENSANUT PA module, ENIGH spending, Anuarios de Morbilidad) refine the picture.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">03</div>
+        <h3>Primary Survey</h3>
+        <p>104 respondents in SLP test the root-cause hypothesis: lack of time is the dominant structural barrier.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">04</div>
+        <h3>Intervention Design</h3>
+        <p>Concrete reinforcement of PE and Vida Saludable, validated by five experts across research, leadership, and practice.</p>
+      </div>
+      <div class="phase">
+        <div class="phase-num">05</div>
+        <h3>Monte-Carlo Simulation</h3>
+        <p>5,000 runs project BMI trajectories at 1, 3, and 5 years under five scenarios, with effect sizes drawn from published meta-analyses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section class="section" id="findings">
+  <div class="container">
+    <div class="section-eyebrow">§03 — Key Findings from the Survey</div>
+    <h2>The population names<br>the solution itself<em>.</em></h2>
+    <p class="section-intro">
+      Of 104 surveyed respondents, the picture is consistent: structural time scarcity drives unhealthy eating; parents are aware and concerned; and the most-requested solution is precisely the one we propose — nutrition education paired with access to healthy options.
+    </p>
+
+    <div class="findings-grid">
+      <div class="finding-card">
+        <h3>Why don't you cook?</h3>
+        <div class="finding-sub">N = 104 · multi-select</div>
+        <div class="chart-host"><canvas id="chartWhy"></canvas></div>
+        <p class="finding-takeaway">"No tengo tiempo debido al trabajo" is the dominant answer — structural, not individual.</p>
+      </div>
+
+      <div class="finding-card">
+        <h3>What solutions do you want?</h3>
+        <div class="finding-sub">N = 104 · multi-select</div>
+        <div class="chart-host"><canvas id="chartSolutions"></canvas></div>
+        <p class="finding-takeaway">"Nutrition education" sits in the top three — alongside access and time, the population validates our hypothesis.</p>
+      </div>
+
+      <div class="finding-card">
+        <h3>Parental concern</h3>
+        <div class="finding-sub">N = 24 parents</div>
+        <div class="chart-host"><canvas id="chartConcern"></canvas></div>
+        <p class="finding-takeaway">Over 90 % of surveyed parents are concerned — latent demand for intervention is real.</p>
+      </div>
+
+      <div class="finding-card">
+        <h3>Willingness to change</h3>
+        <div class="finding-sub">N = 94 · "with more time/resources"</div>
+        <div class="chart-host"><canvas id="chartWilling"></canvas></div>
+        <p class="finding-takeaway">85 % would change. Willingness isn't the limiting factor — structure is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="container">
+  <div class="pull-quote">
+    <p>The population doesn't need <em>permission</em>. It needs <em>tools</em>. Our proposal is not a new mandate — it is a reinforcement of the curriculum the Nueva Escuela Mexicana already names but doesn't yet equip.</p>
+    <div class="attr">— Healthy Nanostore Team · MIT LiftLab 2026</div>
+  </div>
+</section>
+
+<!-- INTERVENTION -->
+<section class="section" id="intervention">
+  <div class="container">
+    <div class="section-eyebrow">§04 — The Intervention</div>
+    <h2>Four components<em>,</em> built on what already exists.</h2>
+    <p class="section-intro">
+      Lower-secondary students (ages 12–15) are the target population — both because their obesity prevalence is the highest and because adolescent habits track strongly into adulthood. The intervention reinforces, rather than replaces, the existing NEM curriculum.
+    </p>
+
+    <div class="intervention-grid">
+      <div class="iv">
+        <div class="iv-letter">A</div>
+        <h3>Expanded PE</h3>
+        <p>From 2 h/week to 3 h/week. The added session is dedicated to <em>Active Lifestyle Literacy</em> — reading labels, planning healthy snacks on a real budget, mapping the food environment.</p>
+      </div>
+      <div class="iv">
+        <div class="iv-letter">B</div>
+        <h3>Critical Environment Module</h3>
+        <p>Biweekly audits of the nanostores around the school. Students count and classify products, document prices, and present findings. Pure NEM articulating-axis territory.</p>
+      </div>
+      <div class="iv">
+        <div class="iv-letter">C</div>
+        <h3>Teacher CPD</h3>
+        <p>An 8-hour asynchronous training package plus an optional 4-hour synchronous workshop. Without trained teachers, nothing works.</p>
+      </div>
+      <div class="iv">
+        <div class="iv-letter">D</div>
+        <h3>Family Bridge</h3>
+        <p>A monthly take-home activity — discussion prompt, low-cost recipe, signed reflection. Not homework: an invitation that respects family time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATION -->
+<section class="section" id="simulation">
+  <div class="container">
+    <div class="section-eyebrow">§05 — Monte-Carlo Simulation</div>
+    <h2>Five years out<em>,</em> projected and honest.</h2>
+    <p class="section-intro">
+      Effect sizes are drawn from published meta-analyses (Silveira 2013, Cochrane, Brown 2020, Hodder 2021). We report a long-term <strong>null-robustness scenario</strong> alongside the positive ones — failing to do so would be cherry-picking.
+    </p>
+
+    <div class="sim-wrap">
+      <div class="sim-chart-host"><canvas id="chartSim"></canvas></div>
+
+      <table class="sim-table">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Year</th>
+            <th>Mean ΔBMI (kg/m²)</th>
+            <th>Overweight + %</th>
+            <th>Obesity %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="scen">Baseline (no intervention)</td><td>5</td><td class="neg">+2.25</td><td>64.6</td><td>31.8</td></tr>
+          <tr><td class="scen">Conservative</td><td>5</td><td>+2.02</td><td>62.6</td><td>30.0</td></tr>
+          <tr><td class="scen">Central</td><td>5</td><td class="pos">+1.57</td><td>58.4</td><td>26.4</td></tr>
+          <tr><td class="scen">Optimistic</td><td>5</td><td class="pos">+1.09</td><td>53.8</td><td>22.7</td></tr>
+          <tr><td class="scen">Null-robustness</td><td>5</td><td>+2.24</td><td>64.5</td><td>31.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" id="team">
+  <div class="container">
+    <div class="section-eyebrow">§06 — Team</div>
+    <h2>Three perspectives<em>,</em> one project.</h2>
+
+    <div class="team-grid">
+      <div class="member">
+        <h3>Fernanda Ita</h3>
+        <div class="role">Educational Research</div>
+        <p>Literature synthesis, NEM curricular framework, interview coding, qualitative analysis.</p>
+      </div>
+      <div class="member">
+        <h3>Alexis Marcos</h3>
+        <div class="role">Field Research</div>
+        <p>Survey instrument design, expert outreach, validation interviews, thematic synthesis.</p>
+      </div>
+      <div class="member">
+        <h3>Carlos Torres</h3>
+        <div class="role">Quantitative Modelling</div>
+        <p>Linear regression, Monte-Carlo simulation, data infrastructure, web platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>The Project</h4>
+        <p class="footer-tag">Evidence-based intervention for Mexican childhood health — built on what already exists in the curriculum.</p>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="../../README.md">README</a></li>
+          <li><a href="../../docs/methodology.md">Methodology</a></li>
+          <li><a href="../../docs/curricular_proposal.md">Curricular Proposal</a></li>
+          <li><a href="../../docs/validation_protocol.md">Validation Protocol</a></li>
+          <li><a href="../../docs/references.bib">References</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Institution</h4>
+        <ul>
+          <li>Tecnológico de Monterrey</li>
+          <li>Campus San Luis Potosí</li>
+          <li>Mechatronics Engineering</li>
+          <li>MIT LiftLab 2026</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <span>© 2026 Healthy Nanostore Team</span>
+      <span>MIT License · Open data, open code</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ──────────────────────────────────────────────────────────
+// Chart.js defaults — match editorial aesthetic
+// ──────────────────────────────────────────────────────────
+Chart.defaults.font.family = "'IBM Plex Sans', system-ui, sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#4a3f35';
+Chart.defaults.borderColor = '#d6cab8';
+
+const COL = {
+  alarm:   '#b8332a',
+  alarmS:  '#e6a8a2',
+  success: '#2d5e3e',
+  successS:'#a8c6b1',
+  data:    '#1d4e89',
+  dataS:   '#a3b8d4',
+  gold:    '#b8862a',
+  ink:     '#1a1612',
+  muted:   '#8a7d6e'
+};
+
+// 1. Why don't you cook?
+new Chart(document.getElementById('chartWhy'), {
+  type: 'bar',
+  data: {
+    labels: ['No tengo tiempo (trabajo)', 'No me gusta cocinar', 'Prefiero comprar preparada', 'Estudios / universidad', 'No sé cocinar', 'Otra persona cocina'],
+    datasets: [{
+      data: [38, 28, 12, 7, 5, 6],
+      backgroundColor: COL.alarm,
+      borderColor: COL.ink,
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, grid: { color: '#d6cab8' }, ticks: { font: { family: "'IBM Plex Mono', monospace", size: 10 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// 2. Top requested solutions
+new Chart(document.getElementById('chartSolutions'), {
+  type: 'bar',
+  data: {
+    labels: ['Acceso a alimentos saludables', 'Programas de educación nutricional', 'Menos horas de trabajo', 'Otros'],
+    datasets: [{
+      data: [41, 27, 21, 4],
+      backgroundColor: [COL.success, COL.gold, COL.data, COL.muted],
+      borderColor: COL.ink,
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, grid: { color: '#d6cab8' }, ticks: { font: { family: "'IBM Plex Mono', monospace", size: 10 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  }
+});
+
+// 3. Parental concern
+new Chart(document.getElementById('chartConcern'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Muy preocupado', 'Algo preocupado', 'No lo he pensado', 'No preocupado'],
+    datasets: [{
+      data: [12, 10, 1, 1],
+      backgroundColor: [COL.alarm, '#d97b6f', COL.muted, COL.success],
+      borderColor: '#fffdf9',
+      borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 14 } }
+    },
+    cutout: '60%'
+  }
+});
+
+// 4. Willingness to change
+new Chart(document.getElementById('chartWilling'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sí', 'Tal vez', 'No'],
+    datasets: [{
+      data: [80, 9, 5],
+      backgroundColor: [COL.success, COL.gold, COL.alarm],
+      borderColor: '#fffdf9',
+      borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 14 } }
+    },
+    cutout: '60%'
+  }
+});
+
+// 5. Simulation trajectories
+new Chart(document.getElementById('chartSim'), {
+  type: 'line',
+  data: {
+    labels: ['Baseline (yr 0)', 'Year 1', 'Year 3', 'Year 5'],
+    datasets: [
+      { label: 'No intervention',  data: [0, 0.45, 1.35, 2.25], borderColor: COL.muted, backgroundColor: 'transparent', borderWidth: 2.5, tension: 0.2, borderDash: [6, 4] },
+      { label: 'Conservative',     data: [0, 0.41, 1.21, 2.02], borderColor: COL.gold,  backgroundColor: 'transparent', borderWidth: 2.5, tension: 0.2 },
+      { label: 'Central',          data: [0, 0.32, 0.94, 1.57], borderColor: COL.data,  backgroundColor: 'transparent', borderWidth: 3,   tension: 0.2 },
+      { label: 'Optimistic',       data: [0, 0.22, 0.66, 1.09], borderColor: COL.success, backgroundColor: 'transparent', borderWidth: 2.5, tension: 0.2 },
+      { label: 'Null-robustness',  data: [0, 0.45, 1.35, 2.24], borderColor: COL.alarm, backgroundColor: 'transparent', borderWidth: 2,   tension: 0.2, borderDash: [2, 4] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 18, boxWidth: 18, usePointStyle: true } },
+      tooltip: {
+        backgroundColor: COL.ink,
+        titleFont: { family: "'IBM Plex Sans'", size: 13 },
+        bodyFont:  { family: "'IBM Plex Mono'", size: 12 },
+        padding: 12,
+        callbacks: { label: ctx => `${ctx.dataset.label}: ΔBMI +${ctx.parsed.y.toFixed(2)} kg/m²` }
+      }
+    },
+    scales: {
+      y: { title: { display: true, text: 'Mean ΔBMI (kg/m²)', font: { family: "'IBM Plex Mono'", size: 11 } }, beginAtZero: true, grid: { color: '#d6cab8' } },
+      x: { grid: { display: false }, ticks: { font: { family: "'IBM Plex Mono'", size: 11 } } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
