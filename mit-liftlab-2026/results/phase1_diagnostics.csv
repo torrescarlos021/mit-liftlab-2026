@@ -1,0 +1,5 @@
+R²,R²_adj,F-stat,F p-value,AIC,BIC,Breusch–Pagan stat,Breusch–Pagan p,Shapiro–Wilk stat,Shapiro–Wilk p,max Cook's D,n influential (Cook's > 4/n),model
+0.064,0.0328,2.0524,0.1623,172.1013,175.0327,0.0629,0.802,0.891,0.0037,0.691,5,obesity_prev_5_11::M1_simple
+0.6344,0.5952,16.193,0.0,146.0231,151.886,8.5722,0.0356,0.9664,0.407,0.3735,5,obesity_prev_5_11::M2_controlled
+0.0721,0.0411,2.3303,0.1374,168.6181,171.5496,0.0898,0.7644,0.8775,0.0017,0.6505,5,obesity_prev_12_19::M1_simple
+0.6294,0.5897,15.8513,0.0,143.2475,149.1104,10.2783,0.0163,0.9455,0.1072,0.4898,5,obesity_prev_12_19::M2_controlled

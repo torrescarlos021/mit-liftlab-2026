@@ -1,0 +1,13 @@
+model,term,coef,std_err,t,p_value,ci_low,ci_high
+obesity_prev_5_11::M1_simple,const,43.0433,4.176,10.3073,0.0,34.5148,51.5719
+obesity_prev_5_11::M1_simple,nanostore_density,-0.2996,0.2091,-1.4326,0.1623,-0.7266,0.1275
+obesity_prev_5_11::M2_controlled,const,4.7307,7.1372,0.6628,0.5129,-9.8891,19.3506
+obesity_prev_5_11::M2_controlled,nanostore_density,0.9913,0.2409,4.1153,0.0003,0.4979,1.4847
+obesity_prev_5_11::M2_controlled,marginalization_index,-2.4307,0.8975,-2.7083,0.0114,-4.269,-0.5923
+obesity_prev_5_11::M2_controlled,urbanization_pct,0.1675,0.0579,2.8947,0.0073,0.049,0.286
+obesity_prev_12_19::M1_simple,const,46.3035,3.9548,11.7082,0.0,38.2267,54.3803
+obesity_prev_12_19::M1_simple,nanostore_density,-0.3023,0.198,-1.5265,0.1374,-0.7067,0.1021
+obesity_prev_12_19::M2_controlled,const,9.9186,6.8342,1.4513,0.1578,-4.0807,23.9179
+obesity_prev_12_19::M2_controlled,nanostore_density,0.9066,0.2307,3.9303,0.0005,0.4341,1.3791
+obesity_prev_12_19::M2_controlled,marginalization_index,-2.1896,0.8594,-2.5479,0.0166,-3.9499,-0.4292
+obesity_prev_12_19::M2_controlled,urbanization_pct,0.1635,0.0554,2.9511,0.0063,0.05,0.277

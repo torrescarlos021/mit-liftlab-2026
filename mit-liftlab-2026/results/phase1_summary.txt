@@ -1,0 +1,38 @@
+PHASE 1 — LINEAR REGRESSION SUMMARY
+============================================================
+
+Observations: 32 Mexican federal entities
+Predictors:   nanostore_density, marginalization_index, urbanization_pct
+
+Model obesity_prev_5_11::M1_simple
+  R²        = 0.0640    R²_adj = 0.0328
+  F p-value = 0.1623
+  AIC       = 172.10   BIC    = 175.03
+  Breusch–Pagan p = 0.802
+  Shapiro–Wilk p  = 0.003683
+  influential obs = 5
+
+Model obesity_prev_5_11::M2_controlled
+  R²        = 0.6344    R²_adj = 0.5952
+  F p-value = 2.684e-06
+  AIC       = 146.02   BIC    = 151.89
+  Breusch–Pagan p = 0.03555
+  Shapiro–Wilk p  = 0.407
+  influential obs = 5
+
+Model obesity_prev_12_19::M1_simple
+  R²        = 0.0721    R²_adj = 0.0411
+  F p-value = 0.1374
+  AIC       = 168.62   BIC    = 171.55
+  Breusch–Pagan p = 0.7644
+  Shapiro–Wilk p  = 0.001735
+  influential obs = 5
+
+Model obesity_prev_12_19::M2_controlled
+  R²        = 0.6294    R²_adj = 0.5897
+  F p-value = 3.23e-06
+  AIC       = 143.25   BIC    = 149.11
+  Breusch–Pagan p = 0.01634
+  Shapiro–Wilk p  = 0.1072
+  influential obs = 5
+
