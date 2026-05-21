@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.DS_Store
+.idea/
+.vscode/
+# Generated outputs (re-create by running the scripts)
+results/
+*.tmp

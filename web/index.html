@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De las tienditas a las aulas — MIT LiftLab 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#f4efe6; --paper-2:#ebe3d5; --ink:#1a1612; --ink-soft:#4a4138;
+    --alarm:#b8332a; --success:#2d5e3e; --data:#1d4e89; --gold:#b8862a; --muted:#8a7d6e;
+    --line:#d6ccb9;
+    --display:"Fraunces",serif; --body:"IBM Plex Sans",sans-serif; --mono:"IBM Plex Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  /* HERO */
+  header{padding:90px 0 60px;border-bottom:3px solid var(--ink)}
+  .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--alarm);font-weight:500}
+  h1{font-family:var(--display);font-weight:900;font-size:clamp(2.8rem,7vw,5.6rem);line-height:.98;
+    letter-spacing:-.02em;margin:.25em 0 .3em}
+  h1 em{font-style:italic;color:var(--alarm)}
+  .lede{font-family:var(--display);font-size:clamp(1.15rem,2.2vw,1.5rem);font-weight:400;
+    max-width:46ch;color:var(--ink-soft);font-style:italic}
+  .meta{margin-top:34px;display:flex;gap:28px;flex-wrap:wrap;font-family:var(--mono);font-size:.8rem;
+    color:var(--muted);letter-spacing:.04em}
+  .meta b{color:var(--ink);font-weight:500}
+  /* ACT SECTIONS */
+  .act{padding:78px 0;border-bottom:1px solid var(--line)}
+  .act-num{font-family:var(--display);font-size:clamp(4rem,12vw,9rem);font-weight:900;line-height:.8;
+    color:var(--paper-2);-webkit-text-stroke:1.5px var(--line);display:block}
+  .act-tag{font-family:var(--mono);font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--alarm);margin-top:-1.4em;display:block;font-weight:500}
+  .act h2{font-family:var(--display);font-weight:600;font-size:clamp(1.9rem,4vw,3rem);line-height:1.05;
+    margin:.15em 0 .5em;max-width:20ch}
+  .act p{max-width:62ch;margin-bottom:18px;color:var(--ink-soft);font-size:1.05rem}
+  .act p strong{color:var(--ink)}
+  .pull{font-family:var(--display);font-style:italic;font-size:clamp(1.4rem,3vw,2rem);line-height:1.25;
+    color:var(--ink);border-left:4px solid var(--alarm);padding:6px 0 6px 26px;margin:34px 0;max-width:30ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:36px}
+  @media(max-width:780px){.grid2{grid-template-columns:1fr}}
+  .chart-card{background:#fff;border:1px solid var(--line);padding:22px;
+    box-shadow:6px 6px 0 var(--paper-2)}
+  .chart-card h4{font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:14px;font-weight:500}
+  .chart-box{position:relative;height:300px}
+  /* STAT STRIP */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);margin:38px 0}
+  @media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--paper);padding:24px 18px;text-align:center}
+  .stat .n{font-family:var(--display);font-weight:900;font-size:2.6rem;line-height:1;color:var(--alarm)}
+  .stat .n.g{color:var(--success)} .stat .n.b{color:var(--data)}
+  .stat .l{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin-top:8px;line-height:1.4}
+  /* CALLOUT */
+  .callout{background:var(--ink);color:var(--paper);padding:40px;margin:40px 0}
+  .callout .eyebrow{color:var(--gold)}
+  .callout p{color:var(--paper);max-width:60ch;font-size:1.1rem}
+  .callout .big{font-family:var(--display);font-size:clamp(1.4rem,3vw,2.1rem);font-weight:600;
+    line-height:1.2;margin:.3em 0}
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;margin-top:24px;font-size:.95rem}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  td:first-child{font-weight:500}
+  tr.hi td{background:var(--paper-2);font-weight:600}
+  .delta-g{color:var(--success);font-weight:600} .delta-r{color:var(--muted)}
+  /* FOOTER */
+  footer{padding:70px 0 90px;text-align:center}
+  footer .team{display:flex;gap:38px;justify-content:center;flex-wrap:wrap;margin:30px 0;
+    font-family:var(--mono);font-size:.84rem}
+  footer .team b{display:block;font-family:var(--body);font-size:1rem;color:var(--ink)}
+  footer .team span{color:var(--muted)}
+  .sig{font-family:var(--display);font-style:italic;color:var(--muted);margin-top:24px}
+  .reveal{opacity:0;transform:translateY(28px);transition:all .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="eyebrow">MIT LiftLab 2026 · Tec de Monterrey SLP</span>
+    <h1>De las tienditas<br>a las <em>aulas</em></h1>
+    <p class="lede">¿Qué impide que la gente compre productos saludables en las nanostores de México? Una investigación en cuatro actos — incluyendo el modelo que no funcionó.</p>
+    <div class="meta">
+      <span><b>3,040</b> registros MIT</span>
+      <span><b>104</b> encuestas propias</span>
+      <span><b>4</b> actos</span>
+      <span><b>5,000</b> corridas Monte Carlo</span>
+    </div>
+  </div>
+</header>
+
+<!-- ACTO 1 -->
+<section class="act reveal">
+  <div class="wrap">
+    <span class="act-num">01</span>
+    <span class="act-tag">El gancho honesto</span>
+    <h2>La regresión que no funcionó</h2>
+    <p>Empezamos como cualquier analista: con una regresión lineal para predecir cuánto gasta un comprador a partir de su demografía y presupuesto.</p>
+    <p>El modelo explicó <strong>casi nada</strong>. Pero ese fracaso fue el primer hallazgo real.</p>
+    <div class="grid2">
+      <div>
+        <div class="pull">Un R² de 0.03 no es un error: es evidencia de que el problema no es individual, es estructural.</div>
+      </div>
+      <div class="chart-card">
+        <h4>R² por fold — predecir gasto del comprador</h4>
+        <div class="chart-box"><canvas id="c1"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO 2 -->
+<section class="act reveal">
+  <div class="wrap">
+    <span class="act-num">02</span>
+    <span class="act-tag">El insight real</span>
+    <h2>Cambiamos la pregunta y usamos ML</h2>
+    <p>En vez de <em>"¿cuánto gasta esta persona?"</em>, preguntamos qué se compra realmente y cómo se ve el sistema completo. Encontramos cuatro cosas.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">60.8%</div><div class="l">compra ≥1 producto no saludable</div></div>
+      <div class="stat"><div class="n">50.3%</div><div class="l">compra solo no saludable</div></div>
+      <div class="stat"><div class="n g">23.7%</div><div class="l">compra algo saludable</div></div>
+      <div class="stat"><div class="n b">66%</div><div class="l">entregas sin oferta saludable</div></div>
+    </div>
+
+    <div class="grid2">
+      <div class="chart-card">
+        <h4>Insight 1 — La canasta real</h4>
+        <div class="chart-box"><canvas id="c2a"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Insight 2 — La paradoja intención-acción</h4>
+        <div class="chart-box"><canvas id="c2b"></canvas></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">El corazón del proyecto</span>
+      <p class="big">La gente sabe (85%), querría (63%) y pide opciones (65%). Pero compra lo no saludable.</p>
+      <p>La barrera dominante que declaran es la <strong style="color:var(--gold)">percepción de precio</strong>. Ni la regresión ni un Random Forest (AUC ≈ 0.55) predicen la compra por rasgos individuales: el problema es estructural, no de las personas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO 3 -->
+<section class="act reveal">
+  <div class="wrap">
+    <span class="act-num">03</span>
+    <span class="act-tag">Triangulación</span>
+    <h2>Salimos a campo con nuestra propia encuesta</h2>
+    <p>104 respuestas en San Luis Potosí, una muestra independiente. <strong>Convergió con el dataset nacional.</strong></p>
+    <div class="grid2">
+      <div>
+        <p>La razón más citada para no cocinar: <strong>falta de tiempo por el trabajo</strong>. Y al preguntar qué solución querían, los propios encuestados nombraron la educación nutricional entre las tres primeras.</p>
+        <div class="pull">80 de 94 cambiarían sus hábitos con más tiempo o recursos.</div>
+      </div>
+      <div class="chart-card">
+        <h4>Soluciones más solicitadas (encuesta propia)</h4>
+        <div class="chart-box"><canvas id="c3"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO 4 -->
+<section class="act reveal">
+  <div class="wrap">
+    <span class="act-num">04</span>
+    <span class="act-tag">La solución</span>
+    <h2>Formar a los compradores del futuro</h2>
+    <p>Si la gente ya sabe y ya quiere, la palanca de mayor impacto es construir los hábitos de la próxima generación: reforzar Educación Física y el eje <em>Vida Saludable</em> en secundaria. Proyectamos el impacto sobre el IMC con una simulación Monte Carlo.</p>
+    <div class="grid2">
+      <div class="chart-card">
+        <h4>Obesidad proyectada en la cohorte — año 5</h4>
+        <div class="chart-box"><canvas id="c4"></canvas></div>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>Escenario</th><th>Año 5</th><th>vs base</th></tr></thead>
+          <tbody>
+            <tr><td>Sin intervención</td><td>31.9%</td><td class="delta-r">—</td></tr>
+            <tr><td>Conservador</td><td>29.8%</td><td class="delta-g">−2.1 pp</td></tr>
+            <tr class="hi"><td>Central</td><td>26.2%</td><td class="delta-g">−5.7 pp</td></tr>
+            <tr><td>Optimista</td><td>22.7%</td><td class="delta-g">−9.2 pp</td></tr>
+            <tr><td>Robustez nula</td><td>32.0%</td><td class="delta-r">≈ 0</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:18px;font-size:.92rem;color:var(--muted)">Incluimos el escenario de resultado nulo (Hodder 2021) por honestidad epistémica — no seleccionamos datos a conveniencia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Del dato crudo a la solución</span>
+    <div class="team">
+      <div><b>Fernanda Ita</b><span>Marco curricular</span></div>
+      <div><b>Alexis Marcos</b><span>Trabajo de campo</span></div>
+      <div><b>Carlos Torres</b><span>Modelado y plataforma</span></div>
+    </div>
+    <p class="sig">Tecnológico de Monterrey · Campus San Luis Potosí · MIT LiftLab 2026</p>
+  </div>
+</footer>
+
+<script>
+const FT={font:{family:"'IBM Plex Mono', monospace",size:11}};
+const C={alarm:'#b8332a',success:'#2d5e3e',data:'#1d4e89',gold:'#b8862a',muted:'#8a7d6e',ink:'#1a1612',line:'#d6ccb9'};
+Chart.defaults.font.family="'IBM Plex Sans', sans-serif";
+Chart.defaults.color=C.muted;
+
+// Acto 1 — R2 por fold
+new Chart(c1,{type:'bar',data:{labels:['F1','F2','F3','F4','F5'],
+  datasets:[{data:[0.031,0.038,-0.003,0.056,0.040],backgroundColor:C.alarm,borderColor:C.ink,borderWidth:1}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'R² = '+c.parsed.y}}},
+    scales:{y:{suggestedMin:-0.05,suggestedMax:0.5,grid:{color:C.line},title:{display:true,text:'R²'}},x:{grid:{display:false}}}}});
+
+// Acto 2a — canasta
+new Chart(c2a,{type:'bar',data:{labels:['Bebidas azuc.','Snacks salados','Pan/Tortilla','Lácteos','Frutas y verd.','Agua'],
+  datasets:[{data:[103,71,50,45,36,21],backgroundColor:[C.alarm,C.alarm,C.gold,C.gold,C.success,C.success],borderColor:C.ink,borderWidth:1}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:C.line}},y:{grid:{display:false}}}}});
+
+// Acto 2b — paradoja
+new Chart(c2b,{type:'bar',data:{labels:['Saben\nque daña','Comprarían\nsano','Quieren\nopciones','Lo ven\ncaro','Realmente\ncompran'],
+  datasets:[{data:[85.3,62.8,64.6,65.8,23.7],backgroundColor:[C.data,C.data,C.data,C.gold,C.success],borderColor:C.ink,borderWidth:1}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'%'}}},
+    scales:{y:{max:100,grid:{color:C.line},title:{display:true,text:'% compradores'}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
+
+// Acto 3 — soluciones
+new Chart(c3,{type:'bar',data:{labels:['Acceso a sanos\ny económicos','Menos horas\nde trabajo','Educación\nnutricional'],
+  datasets:[{data:[34,22,21],backgroundColor:[C.success,C.data,C.gold],borderColor:C.ink,borderWidth:1}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:C.line}},y:{grid:{display:false}}}}});
+
+// Acto 4 — obesidad
+new Chart(c4,{type:'bar',data:{labels:['Sin interv.','Conservador','Central','Optimista','Nulo'],
+  datasets:[{data:[31.9,29.8,26.2,22.7,32.0],
+    backgroundColor:[C.muted,'#7a9a6a',C.success,'#1e7a4a',C.alarm],borderColor:C.ink,borderWidth:1}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'% obesidad'}}},
+    scales:{y:{suggestedMin:18,suggestedMax:34,grid:{color:C.line},title:{display:true,text:'% obesidad año 5'}},x:{grid:{display:false}}}}});
+
+// reveal on scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
