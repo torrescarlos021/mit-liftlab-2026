@@ -2,6 +2,19 @@
 ## "De las Tienditas a las Aulas" · MIT LiftLab 2026
 
 > Versión simple, sin tecnicismos. Para que lo puedas explicar con tus propias palabras.
+> **ACTUALIZADO para el formato de 5 minutos** — slide numbers corresponden a la nueva presentación.
+
+---
+
+## VERSIÓN 5 MINUTOS — Lo que Carlos explica y cuándo
+
+| Slide | Qué explica Carlos | Tiempo |
+|-------|-------------------|--------|
+| Slide 2 | R² = 0.032 + AUC = 0.55 | 45 seg |
+| Slide 3 | Los 4 números + brecha de 39 pts | 45 seg |
+| Slide 6 | Monte Carlo simplificado | 45 seg |
+
+---
 
 ---
 
@@ -70,53 +83,50 @@ Tener 55% es casi lo mismo que adivinar a ciegas. Lo que eso nos dice: **no impo
 
 ---
 
-## SLIDE 9 — Monte Carlo (la proyección)
-### ¿Qué es una simulación Monte Carlo?
+## SLIDE 6 (versión 5 min) — Monte Carlo SIMPLIFICADO
+### ¿Qué muestra ahora la gráfica? (VERSIÓN NUEVA — más fácil)
 
-Imagina que lanzas una moneda 5,000 veces para estimar cuántas veces cae cara. No lo calculas una vez — lo repites miles de veces para ver el rango de resultados posibles. Eso es, básicamente, Monte Carlo.
+En la versión anterior había 5 líneas en el tiempo. **Ahora son 3 barras simples** que muestran el resultado al año 5. Mucho más fácil de leer de un vistazo.
 
-Nosotros lo usamos para proyectar qué le pasaría al IMC (índice de masa corporal) de 1,000 estudiantes si aplicamos la intervención, durante 5 años. Y lo repetimos **5,000 veces por escenario** para ver el rango de lo que podría pasar.
+**Las 3 barras que ves:**
 
-**¿Por qué no usamos solo datos reales de México?**
-Porque no existen. No hay un estudio de 5 años en secundarias mexicanas con este tipo de intervención. Lo que sí existen son **meta-análisis** — estudios que compilan los resultados de docenas de experimentos en otros países. Usamos esos números como punto de partida.
+| Barra | Color | Valor | Qué significa |
+|-------|-------|-------|---------------|
+| Sin intervención | Rojo | **36.4%** | Si no hacemos nada, la obesidad sube (era 31.9% al inicio) |
+| Resultado nulo | Gris | **32.0%** | Si la intervención no funciona, se mantiene estable |
+| Con intervención (central) | Verde | **26.2%** | Si funciona según la literatura, baja 5.7 puntos |
 
-**¿Qué muestra la gráfica?**
-Cinco líneas que van del año 0 al año 5:
+**El mensaje visual es inmediato:** la barra verde es claramente más corta. No necesitas explicar matemáticas — la diferencia se ve sola.
 
-- **Línea gris punteada (Sin intervención):** si no hacemos nada, la obesidad en la cohorte sube de 31.9% a 36.4%. Solo por el crecimiento natural.
-- **Línea gris clara punteada (Resultado nulo):** si la intervención no funciona en absoluto (basado en un estudio pesimista de 2021), se queda estable alrededor de 32%.
-- **Línea dorada (Conservador):** si funciona poco, baja a 29.8%.
-- **Línea verde oscuro (Central):** con el efecto promedio de la literatura publicada, baja a **26.2%**. Una reducción de 5.7 puntos porcentuales.
-- **Línea azul (Optimista):** si funciona bien, baja a 22.7%.
+**¿Qué es Monte Carlo en una oración?**
+Corremos la simulación 5,000 veces con pequeñas variaciones al azar, para ver no solo *qué podría pasar* sino *qué tan probable* es cada resultado. Como lanzar una moneda 5,000 veces en vez de calcularla matemáticamente.
 
-**La tabla de la derecha** resume esos mismos números para que sean fáciles de comparar.
+**¿De dónde vienen los números?**
+De meta-análisis publicados — estudios que juntan los resultados de docenas de experimentos reales en otros países. No inventamos los efectos; los tomamos de la mejor evidencia disponible (Cochrane, Silveira 2013, Brown 2020).
 
 **¿Por qué incluimos el escenario nulo?**
-Porque sería deshonesto no incluirlo. La evidencia dice que a largo plazo algunas intervenciones escolares no tienen efecto duradero. Lo incluimos para que nadie pueda decir que solo mostramos los resultados buenos.
+Porque sería deshonesto no incluirlo. Algunos estudios muestran que las intervenciones escolares no tienen efecto duradero a largo plazo. Lo incluimos para que nadie pueda decir que solo mostramos los resultados buenos. Eso, en el MIT, suma puntos.
 
-**Cómo lo dices:**
-> *"Corrimos 5,000 simulaciones. El escenario más probable nos da una reducción de 5.7 puntos en la prevalencia de obesidad a 5 años. Y les mostramos también el escenario donde no funciona — porque la honestidad es parte de nuestro método."*
-
----
-
-## SLIDE 10 — Las tres columnas (lo que sabemos / asumimos / no sabemos)
-### ¿Para qué sirve este slide?
-
-Para demostrar madurez intelectual. Los jueces del MIT saben que cualquier proyecto tiene limitaciones. Si las escondes, desconfían. Si las declaras abiertamente, les das más credibilidad a tus resultados.
-
-**Lo que sabemos** (verde): cosas que medimos directamente con datos reales.
-**Lo que asumimos** (dorado): cosas que tomamos de la literatura pero que no medimos nosotros.
-**Lo que no sabemos** (rojo): preguntas abiertas que necesitarían un piloto real para responder.
-
-**Cómo lo dices:**
-> *"En el MIT no buscan proyectos perfectos. Buscan proyectos honestos. Por eso separamos explícitamente lo que sabemos, lo que asumimos, y lo que todavía no sabemos."*
+**Cómo lo dices en 45 segundos:**
+> *"Corrimos Monte Carlo: 5,000 simulaciones, 1,000 estudiantes, 5 años.*
+> *Sin intervención, la obesidad sube al 36.4%. Solo por la tendencia natural.*
+> *Con nuestra intervención, el escenario central la baja al 26.2% — menos 5.7 puntos.*
+> *Y este de aquí es el escenario nulo — donde no funciona. Lo incluimos porque la honestidad es parte de nuestro método."*
 
 ---
 
-## RESUMEN: Las 5 frases que Charly debe dominar
+## SLIDE 6 — Panel de honestidad epistémica (mismo slide que Monte Carlo)
 
-1. **"R² de 0.032 — el modelo no explica casi nada. Ese fracaso fue el primer hallazgo."**
-2. **"El Random Forest dio AUC 0.55 — casi igual que el azar. Lo que nos dice que el problema no es de las personas."**
-3. **"85% sabe, 63% querría, 24% compra. Brecha de 39 puntos."**
-4. **"Monte Carlo, 5,000 corridas: escenario central da −5.7 pp en obesidad a 5 años."**
-5. **"Incluimos el resultado nulo intencionalmente. La honestidad no es opcional."**
+El lado derecho del slide muestra tres columnas. No tienes que leerlas — solo señalarlas y decir:
+
+> *"A la derecha separamos lo que sabemos con datos reales, lo que asumimos de la literatura, y lo que todavía no sabemos. En el MIT no buscan proyectos perfectos. Buscan proyectos honestos."*
+
+---
+
+## RESUMEN ACTUALIZADO: Las 5 frases que Charly debe dominar (versión 5 min)
+
+1. **"R² de 0.032 — el modelo no explica casi nada. Ese fracaso fue el primer hallazgo."** *(Slide 2)*
+2. **"El Random Forest dio AUC 0.55 — casi igual que el azar. La barrera no es de las personas, es del sistema."** *(Slide 2)*
+3. **"85% sabe, 63% querría, solo 24% compra. Brecha de 39 puntos."** *(Slide 3)*
+4. **"Monte Carlo, 5,000 corridas: sin intervención 36.4%, con intervención 26.2%. Menos 5.7 puntos."** *(Slide 6)*
+5. **"Incluimos el resultado nulo intencionalmente. La honestidad no es opcional."** *(Slide 6)*
