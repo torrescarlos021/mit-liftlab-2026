@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expert Validation — MIT LiftLab 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:     #F4EFE6;
+      --ink:    #1A1612;
+      --alarm:  #B8332A;
+      --gold:   #B8862A;
+      --green:  #2D5E3E;
+      --muted:  #8A7D6E;
+      --card:   #EDE7DC;
+      --border: #D4C9B8;
+      --white:  #FFFFFF;
+      --radius: 8px;
+      --shadow: 0 2px 12px rgba(26,22,18,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .site-header { background: var(--ink); }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .logo-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--white);
+    }
+    .logo-title span { color: var(--gold); }
+    .logo-sub { font-size: 13px; color: #A09080; margin-top: 4px; }
+    .header-page-info { text-align: right; }
+    .header-page-title { font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .header-page-sub { font-size: 12px; color: #A09080; margin-top: 4px; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid #A09080;
+      color: #C8B89A;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      cursor: default;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── STICKY NAV ─────────────────────────────────────────── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 2px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: inline-block;
+      padding: 13px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #A09080;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── MAIN ────────────────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── SECTION ─────────────────────────────────────────────── */
+    .section { margin-bottom: 72px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .section-title .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .divider { height: 1px; background: var(--border); margin-bottom: 28px; }
+    .lead { font-size: 17px; line-height: 1.7; margin-bottom: 24px; }
+    p { margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── PROTOCOL GRID ──────────────────────────────────────── */
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .proto-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .proto-item .pv {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 5px;
+    }
+    .proto-item .pk {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .proto-item.highlight .pv { color: var(--gold); }
+
+    /* ── CODING LEGEND ──────────────────────────────────────── */
+    .coding-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .code-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .code-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-green  { background: var(--green); }
+    .dot-gold   { background: var(--gold); }
+    .dot-alarm  { background: var(--alarm); }
+
+    .threshold-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .threshold-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .threshold-badge .tb-num {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    /* ── EXPERT CARDS ───────────────────────────────────────── */
+    .expert-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .expert-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 8px 1fr;
+    }
+    .expert-card .ec-accent {
+      background: var(--gold);
+    }
+    .expert-card .ec-body {
+      padding: 22px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .expert-card .ec-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .expert-card .ec-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .expert-card .ec-org {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .expert-card .ec-role {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(26,22,18,0.07);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+    .expert-card .ec-badge-wrap {
+      text-align: right;
+    }
+    .expert-card .ec-index {
+      font-size: 40px;
+      font-weight: 900;
+      color: rgba(26,22,18,0.08);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    /* Accent colors per card */
+    .ec-1 .ec-accent { background: var(--gold); }
+    .ec-2 .ec-accent { background: var(--green); }
+    .ec-3 .ec-accent { background: var(--alarm); }
+    .ec-4 .ec-accent { background: var(--muted); }
+    .ec-5 .ec-accent { background: var(--ink); }
+
+    /* ── THEME CARDS ────────────────────────────────────────── */
+    .theme-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .theme-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .theme-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .theme-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .ti-strong    { background: var(--green); }
+    .ti-converge  { background: var(--gold); }
+    .ti-diverge   { background: var(--alarm); }
+    .theme-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .theme-name .tn-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .convergence-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .cp-strong   { background: rgba(45,94,62,0.12);  color: var(--green); border: 1px solid rgba(45,94,62,0.25); }
+    .cp-converge { background: rgba(184,134,42,0.12); color: var(--gold);  border: 1px solid rgba(184,134,42,0.25); }
+    .cp-nuanced  { background: rgba(138,125,110,0.12); color: var(--muted); border: 1px solid rgba(138,125,110,0.25); }
+    .theme-body {
+      padding: 16px 20px;
+      font-size: 14.5px;
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    /* ── DOT METER ──────────────────────────────────────────── */
+    .dot-meter {
+      display: flex;
+      gap: 5px;
+      margin-top: 4px;
+    }
+    .dm-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .dm-dot.filled-strong   { background: var(--green); }
+    .dm-dot.filled-converge { background: var(--gold); }
+    .dm-dot.filled-nuanced  { background: var(--muted); }
+
+    /* ── REFINEMENTS ────────────────────────────────────────── */
+    .refinement-list {
+      list-style: none;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .refinement-list li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .ref-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .ref-content .ref-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .ref-content .ref-detail {
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+
+    /* ── INFO BOX ───────────────────────────────────────────── */
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .info-box.green-box  { border-left-color: var(--green); }
+    .info-box.alarm-box  { border-left-color: var(--alarm); }
+    .info-box .box-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .info-box p { font-size: 15px; margin: 0 0 10px; }
+    .info-box p:last-child { margin: 0; }
+
+    /* ── HONESTY BOX ────────────────────────────────────────── */
+    .honesty-box {
+      background: var(--green);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin: 24px 0;
+      color: var(--white);
+    }
+    .honesty-box .hb-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    .honesty-box p {
+      color: rgba(255,255,255,0.92);
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .honesty-box p:last-child { margin-bottom: 0; }
+
+    /* ── TWO-COL ────────────────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── BACK TO TOP ────────────────────────────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 18px;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-to-top:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: #A09080;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header-inner { flex-direction: column; }
+      .header-page-info { text-align: left; }
+      .expert-card .ec-body { grid-template-columns: 1fr; }
+      .expert-card .ec-badge-wrap { display: none; }
+    }
+    @media (max-width: 480px) {
+      .section-title { font-size: 18px; }
+      .theme-header { grid-template-columns: auto 1fr; }
+      .convergence-pill { display: none; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-label">MIT LiftLab 2026</div>
+      <div class="logo-title">Lift<span>Lab</span> 2026</div>
+      <div class="logo-sub">Tec de Monterrey · Campus SLP</div>
+    </div>
+    <div class="header-page-info">
+      <div class="header-page-title">Expert Validation<br>Semi-structured Interviews</div>
+      <div class="header-page-sub">Supplementary Research Document</div>
+      <a href="#" class="back-btn">← Back to Presentation</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav" aria-label="Page sections">
+  <div class="nav-inner">
+    <a href="#protocol">1. Protocol</a>
+    <a href="#experts">2. Experts</a>
+    <a href="#themes">3. Key Themes</a>
+    <a href="#refinements">4. Refinements</a>
+    <a href="#recordings">5. Recordings</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═════════════════════════ -->
+<main>
+
+  <!-- ── SECTION 1: PROTOCOL ──────────────────────────────── -->
+  <section class="section" id="protocol">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">
+        <span class="label">Section 1</span>
+        Interview Protocol
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Expert interviews were conducted to validate the research diagnosis, stress-test the intervention design, and surface implementation risks that desk research cannot reveal. Five independent experts were selected to represent different vantage points: academic research, school administration, classroom practice, and the student perspective.
+    </p>
+
+    <div class="protocol-grid">
+      <div class="proto-item highlight">
+        <div class="pv">5</div>
+        <div class="pk">Independent experts interviewed</div>
+      </div>
+      <div class="proto-item highlight">
+        <div class="pv">30–45 min</div>
+        <div class="pk">Duration per interview</div>
+      </div>
+      <div class="proto-item">
+        <div class="pv">8</div>
+        <div class="pk">Core questions (all interviews)</div>
+      </div>
+      <div class="proto-item">
+        <div class="pv">2–3</div>
+        <div class="pk">Role-specific follow-up questions</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box">
+        <div class="box-label">Recording &amp; Consent</div>
+        <p>All interviews were audio recorded with explicit informed consent from each participant. No interview was conducted anonymously — participants agreed to be identified by name and role.</p>
+      </div>
+      <div class="info-box green-box">
+        <div class="box-label">Structure</div>
+        <p>Semi-structured format: 8 identical core questions asked to all five experts, with 2–3 role-specific questions designed to probe each expert's domain knowledge.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <p style="font-size:13px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:var(--muted); margin-bottom:14px;">Thematic Coding Categories</p>
+      <div class="coding-legend">
+        <span class="code-tag"><span class="code-dot dot-green"></span>Convergence</span>
+        <span class="code-tag"><span class="code-dot dot-gold"></span>Partial Convergence</span>
+        <span class="code-tag"><span class="code-dot dot-alarm"></span>Divergence / Nuance</span>
+      </div>
+      <div class="threshold-row">
+        <div class="threshold-badge">
+          <div class="tb-num">4/5</div>
+          <span>= Strong convergence</span>
+        </div>
+        <div class="threshold-badge">
+          <div class="tb-num">3/5</div>
+          <span>= Converging (sufficient for design input)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: EXPERTS ────────────────────────────────── -->
+  <section class="section" id="experts">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">
+        <span class="label">Section 2</span>
+        Interview Participants
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Participants were selected to cover the full implementation chain: university researchers who understand the evidence base, school administrators who control curriculum and scheduling, practicing teachers who work with students daily, and an emerging educator who represents the student and young-professional perspective.
+    </p>
+
+    <div class="expert-grid">
+
+      <!-- Expert 1 -->
+      <div class="expert-card ec-1">
+        <div class="ec-accent"></div>
+        <div class="ec-body">
+          <div>
+            <div class="ec-num">Expert 01</div>
+            <div class="ec-name">Dr. José Manuel Olais Govea</div>
+            <div class="ec-org">Tec de Monterrey, Campus SLP</div>
+            <div class="ec-role">Educational Research</div>
+          </div>
+          <div class="ec-badge-wrap">
+            <div class="ec-index">01</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expert 2 -->
+      <div class="expert-card ec-2">
+        <div class="ec-accent"></div>
+        <div class="ec-body">
+          <div>
+            <div class="ec-num">Expert 02</div>
+            <div class="ec-name">Dr. Leopoldo Zúñiga Silva</div>
+            <div class="ec-org">Tec de Monterrey, Campus SLP</div>
+            <div class="ec-role">Educational Research</div>
+          </div>
+          <div class="ec-badge-wrap">
+            <div class="ec-index">02</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expert 3 -->
+      <div class="expert-card ec-3">
+        <div class="ec-accent"></div>
+        <div class="ec-body">
+          <div>
+            <div class="ec-num">Expert 03</div>
+            <div class="ec-name">MEd Juan Carlos Torres</div>
+            <div class="ec-org">Secundaria Técnica 78, Matehuala SLP</div>
+            <div class="ec-role">Institutional Implementation · School Director</div>
+          </div>
+          <div class="ec-badge-wrap">
+            <div class="ec-index">03</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expert 4 -->
+      <div class="expert-card ec-4">
+        <div class="ec-accent"></div>
+        <div class="ec-body">
+          <div>
+            <div class="ec-num">Expert 04</div>
+            <div class="ec-name">José Tereso Pedraza</div>
+            <div class="ec-org">Secondary School, San Luis Potosí</div>
+            <div class="ec-role">Classroom Practice · Secondary-school Teacher &amp; Fitness Practitioner</div>
+          </div>
+          <div class="ec-badge-wrap">
+            <div class="ec-index">04</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expert 5 -->
+      <div class="expert-card ec-5">
+        <div class="ec-accent"></div>
+        <div class="ec-body">
+          <div>
+            <div class="ec-num">Expert 05</div>
+            <div class="ec-name">Amiris Pérez</div>
+            <div class="ec-org">Education Undergraduate</div>
+            <div class="ec-role">Student / Emerging Educator · Fitness Background</div>
+          </div>
+          <div class="ec-badge-wrap">
+            <div class="ec-index">05</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-box">
+      <div class="box-label">Rationale for Expert Selection</div>
+      <p>The five-person panel was designed to avoid epistemic homogeneity. Two university researchers provide methodological rigor; one school director provides ground-level institutional insight; one practicing teacher provides classroom-reality checks; one emerging educator provides a student-proximate perspective. No two experts hold identical roles, which maximizes the diagnostic value of convergence findings.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: THEMES ─────────────────────────────────── -->
+  <section class="section" id="themes">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">
+        <span class="label">Section 3</span>
+        Key Themes — Convergence Analysis
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Thematic coding identified five high-signal themes. Convergence was scored using the pre-defined threshold: 4 or 5 of 5 experts = strong; 3 of 5 = converging. No themes fell below 3/5.
+    </p>
+
+    <div class="theme-list">
+
+      <!-- Theme 1 -->
+      <div class="theme-card">
+        <div class="theme-header">
+          <div class="theme-icon ti-strong">
+            <span style="font-size:10px; font-weight:900;">5/5</span>
+          </div>
+          <div class="theme-name">
+            <span class="tn-label">Theme 1 · Structural Barriers</span>
+            Structural barriers confirmed
+          </div>
+          <div class="convergence-pill cp-strong">
+            <span>&#10003;</span> Strong — 5/5
+          </div>
+        </div>
+        <div class="theme-body">
+          <div class="dot-meter" style="margin-bottom:12px;">
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+          </div>
+          All five experts agreed, independently and without prompting, that healthy behavior change requires structural enabling conditions — not only individual motivation or knowledge. This is the strongest convergence finding in the study and directly validates the core research diagnosis. No expert contested this framing.
+        </div>
+      </div>
+
+      <!-- Theme 2 -->
+      <div class="theme-card">
+        <div class="theme-header">
+          <div class="theme-icon ti-converge">
+            <span style="font-size:10px; font-weight:900;">4/5</span>
+          </div>
+          <div class="theme-name">
+            <span class="tn-label">Theme 2 · Curricular Fit</span>
+            Intervention aligns with NEM curriculum
+          </div>
+          <div class="convergence-pill cp-converge">
+            &#10003; Strong — 4/5
+          </div>
+        </div>
+        <div class="theme-body">
+          <div class="dot-meter" style="margin-bottom:12px;">
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot"></span>
+          </div>
+          Four of five experts confirmed that the proposed intervention — embedding nutrition and physical activity content within existing subjects — aligns naturally with Mexico's NEM (Nueva Escuela Mexicana) framework and does not require creating a new subject. The one dissenting expert raised implementation complexity, not philosophical disagreement.
+        </div>
+      </div>
+
+      <!-- Theme 3 -->
+      <div class="theme-card">
+        <div class="theme-header">
+          <div class="theme-icon ti-strong">
+            <span style="font-size:10px; font-weight:900;">5/5</span>
+          </div>
+          <div class="theme-name">
+            <span class="tn-label">Theme 3 · Teacher Readiness</span>
+            Teacher preparation is the critical bottleneck
+          </div>
+          <div class="convergence-pill cp-strong">
+            <span>&#10003;</span> Strong — 5/5
+          </div>
+        </div>
+        <div class="theme-body">
+          <div class="dot-meter" style="margin-bottom:12px;">
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+            <span class="dm-dot filled-strong"></span>
+          </div>
+          Every expert flagged teacher preparation as the single most critical factor for intervention success. The concern was not whether teachers are willing, but whether they have the domain knowledge and pedagogical confidence to deliver nutrition and physical activity content effectively. This finding directly shaped the training component of the intervention design — teacher preparation is now a first-class deliverable, not an afterthought.
+        </div>
+      </div>
+
+      <!-- Theme 4 -->
+      <div class="theme-card">
+        <div class="theme-header">
+          <div class="theme-icon ti-converge">
+            <span style="font-size:10px; font-weight:900;">3/5</span>
+          </div>
+          <div class="theme-name">
+            <span class="tn-label">Theme 4 · Family Bridge</span>
+            Family component is feasible with caveats
+          </div>
+          <div class="convergence-pill cp-nuanced">
+            ~ Converging — 3/5
+          </div>
+        </div>
+        <div class="theme-body">
+          <div class="dot-meter" style="margin-bottom:12px;">
+            <span class="dm-dot filled-nuanced"></span>
+            <span class="dm-dot filled-nuanced"></span>
+            <span class="dm-dot filled-nuanced"></span>
+            <span class="dm-dot"></span>
+            <span class="dm-dot"></span>
+          </div>
+          Three of five experts supported including a family engagement component to extend healthy-habit formation beyond school hours. However, all three included important caveats: frequency must be manageable for working parents (monthly, not weekly), content must be immediately practical, and the school must have infrastructure to support family communications. Two experts were neutral — not opposed, but skeptical of realistic family participation rates in SLP context.
+        </div>
+      </div>
+
+      <!-- Theme 5 -->
+      <div class="theme-card">
+        <div class="theme-header">
+          <div class="theme-icon ti-converge">
+            <span style="font-size:10px; font-weight:900;">4/5</span>
+          </div>
+          <div class="theme-name">
+            <span class="tn-label">Theme 5 · Cost Realism</span>
+            Budget of 9,500 MXN/school/year is plausible
+          </div>
+          <div class="convergence-pill cp-converge">
+            &#10003; Strong — 4/5
+          </div>
+        </div>
+        <div class="theme-body">
+          <div class="dot-meter" style="margin-bottom:12px;">
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot filled-converge"></span>
+            <span class="dm-dot"></span>
+          </div>
+          Four experts agreed that the proposed cost of approximately 9,500 MXN per school per year is a realistic figure for a pilot-scale school program in SLP. This is consistent with existing per-student program budgets in the state's public secondary system. The fifth expert noted that cost projections typically underestimate training and coordination overhead in year one, a caveat incorporated into the intervention's cost structure.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: REFINEMENTS ────────────────────────────── -->
+  <section class="section" id="refinements">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">
+        <span class="label">Section 4</span>
+        Post-Validation Design Refinements
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Expert interviews are not merely validations — they are a design input. The following four changes were made to the intervention design as a direct result of expert feedback. Each change is traceable to specific interview findings.
+    </p>
+
+    <ul class="refinement-list">
+      <li>
+        <div class="ref-icon">A</div>
+        <div class="ref-content">
+          <div class="ref-title">PE Hours / Week — Component A</div>
+          <div class="ref-detail">The original fixed value was replaced with a flexible parameter. Expert 03 (school director) clarified that scheduling constraints vary significantly by school — some schools have more PE time than others. The final design specifies a minimum and leaves exact weekly hours subject to adjustment based on school scheduling audits conducted during onboarding.</div>
+        </div>
+      </li>
+      <li>
+        <div class="ref-icon">B</div>
+        <div class="ref-content">
+          <div class="ref-title">Module Placement by Subject</div>
+          <div class="ref-detail">The assignment of specific content modules to specific subjects (e.g., nutrition science in Biology vs. Health class) was left open rather than prescribed. Expert 04 (practicing teacher) noted that subject ownership of cross-cutting content is politically sensitive in many schools. Final design: module placement is determined after a teacher training audit, not before.</div>
+        </div>
+      </li>
+      <li>
+        <div class="ref-icon">C</div>
+        <div class="ref-content">
+          <div class="ref-title">Teacher Training Format — Asynchronous First</div>
+          <div class="ref-detail">Original design assumed synchronous workshops as the primary training format. Experts 01 and 02 recommended asynchronous-first delivery with an optional synchronous workshop, citing scheduling conflicts typical in public secondary schools. The revised format makes asynchronous modules mandatory and synchronous cohort sessions optional but available.</div>
+        </div>
+      </li>
+      <li>
+        <div class="ref-icon">D</div>
+        <div class="ref-content">
+          <div class="ref-title">Family Bridge Frequency — Monthly Confirmed</div>
+          <div class="ref-detail">The originally proposed biweekly family engagement cycle was reduced to monthly. Expert 03 (school director) noted from direct experience that biweekly family sessions create administrative burden and typically see attendance drop sharply by month two. Monthly cadence, confirmed by three experts, was adopted as the pilot standard.</div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="honesty-box">
+      <div class="hb-label">Design Honesty — What Changed</div>
+      <p>Expert validation did not simply confirm the original design. It changed it in four specific, traceable ways. We view this as the correct outcome of a validation process: if every expert had agreed with every original decision, that would suggest the questions were not probing enough.</p>
+      <p>All four refinements make the intervention more deployable, not more ambitious. This reflects a deliberate design philosophy: an intervention that can be reliably implemented at modest fidelity is more valuable than a theoretically optimal program that schools cannot sustain.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: RECORDINGS ─────────────────────────────── -->
+  <section class="section" id="recordings">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">
+        <span class="label">Section 5</span>
+        Full Recordings &amp; Documentation
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Complete documentation is available upon request to competition reviewers. We do not publish recordings publicly out of respect for expert participants' professional privacy, but all materials can be provided under a confidentiality agreement.
+    </p>
+
+    <div class="two-col">
+      <div class="info-box green-box">
+        <div class="box-label">Available Upon Request</div>
+        <p><strong>Audio recordings</strong> of all five interviews, full-length, as recorded with informed consent.</p>
+        <p><strong>Verbatim transcripts</strong> in Spanish (original language of all interviews).</p>
+      </div>
+      <div class="info-box">
+        <div class="box-label">Also Available</div>
+        <p><strong>Thematic coding matrix</strong> — spreadsheet showing each theme coded per expert, with supporting quote excerpts in Spanish and English translation.</p>
+        <p><strong>Interview guide</strong> — full list of 8 core questions and 2–3 role-specific questions used in each session.</p>
+      </div>
+    </div>
+
+    <div class="info-box alarm-box">
+      <div class="box-label">Language Note</div>
+      <p>All interviews were conducted in Spanish. Quotes cited in the presentation and supplementary documents have been translated to English by the research team. The original Spanish recordings are the authoritative source.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <strong>MIT LiftLab 2026</strong> &nbsp;·&nbsp; Fernanda Ita &nbsp;·&nbsp; Alexis Marcos &nbsp;·&nbsp; Carlos Torres &nbsp;·&nbsp; Tec de Monterrey Campus SLP
+</footer>
+
+<!-- ═══════════════════════ BACK TO TOP ══════════════════ -->
+<a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+</body>
+</html>

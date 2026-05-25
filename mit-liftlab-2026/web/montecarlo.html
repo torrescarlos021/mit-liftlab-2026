@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monte Carlo Simulation — MIT LiftLab 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:     #F4EFE6;
+      --ink:    #1A1612;
+      --alarm:  #B8332A;
+      --gold:   #B8862A;
+      --green:  #2D5E3E;
+      --muted:  #8A7D6E;
+      --card:   #EDE7DC;
+      --border: #D4C9B8;
+      --white:  #FFFFFF;
+      --radius: 8px;
+      --shadow: 0 2px 12px rgba(26,22,18,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .site-header {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .logo-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--white);
+    }
+    .logo-title span { color: var(--gold); }
+    .logo-sub { font-size: 13px; font-weight: 400; color: #A09080; margin-top: 4px; }
+    .header-page-info { text-align: right; }
+    .header-page-title { font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .header-page-sub { font-size: 12px; color: #A09080; margin-top: 4px; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid #A09080;
+      color: #C8B89A;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      cursor: default;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── STICKY NAV ─────────────────────────────────────────── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 2px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: inline-block;
+      padding: 13px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #A09080;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── MAIN ────────────────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── SECTION ─────────────────────────────────────────────── */
+    .section { margin-bottom: 72px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .section-title .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .divider { height: 1px; background: var(--border); margin-bottom: 28px; }
+    .lead { font-size: 17px; line-height: 1.7; margin-bottom: 24px; }
+    p { margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── CONFIG GRID ────────────────────────────────────────── */
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .config-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .config-item .cfg-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .config-item .cfg-key {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .config-item.highlight .cfg-val { color: var(--gold); }
+
+    /* ── SENSITIVITY MATRIX ─────────────────────────────────── */
+    .sensitivity-box {
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin: 20px 0;
+      color: var(--white);
+    }
+    .sensitivity-box .sb-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .sensitivity-dims {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .sdim {
+      flex: 1;
+      min-width: 200px;
+    }
+    .sdim .sdim-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #A09080;
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .sdim .sdim-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .sdim .sdim-sub {
+      font-size: 13px;
+      color: #C8B89A;
+      margin-top: 4px;
+    }
+
+    /* ── TABLE ──────────────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 24px 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead {
+      background: var(--ink);
+      color: var(--gold);
+    }
+    thead th {
+      padding: 13px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: var(--card); }
+    tbody tr:nth-child(odd)  { background: var(--bg); }
+    tbody tr:hover { background: rgba(184,134,42,0.08); }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .td-source {
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .td-delta {
+      font-weight: 700;
+      color: var(--green);
+      font-size: 15px;
+    }
+    .td-delta.neg { color: var(--alarm); }
+    .td-ci {
+      font-family: 'Inter', monospace;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* ── SCENARIO TABLE COLORS ──────────────────────────────── */
+    .sc-baseline  td:nth-child(1) { font-weight: 700; color: var(--alarm); }
+    .sc-conservative td:nth-child(1) { font-weight: 700; color: var(--gold); }
+    .sc-central   td:nth-child(1) { font-weight: 700; color: var(--green); }
+    .sc-optimistic td:nth-child(1) { font-weight: 700; color: var(--green); }
+    .sc-null      td:nth-child(1) { font-weight: 600; color: var(--muted); }
+    .sc-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 6px;
+    }
+    .sc-tag.status-quo { background: rgba(184,51,42,0.15); color: var(--alarm); }
+    .sc-tag.primary    { background: rgba(45,94,62,0.15);  color: var(--green); }
+
+    /* ── YEAR-0 BADGE ────────────────────────────────────────── */
+    .year0-box {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      background: rgba(26,22,18,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+    }
+    .year0-box .y0-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .year0-box .y0-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .year0-box .y0-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--alarm);
+      letter-spacing: -0.02em;
+    }
+    .year0-box .y0-desc { font-size: 12px; color: var(--muted); }
+
+    /* ── CSS BAR CHART ──────────────────────────────────────── */
+    .chart-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      margin: 24px 0;
+    }
+    .chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .chart-subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 50px;
+      align-items: center;
+      gap: 14px;
+    }
+    .bar-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: right;
+    }
+    .bar-track {
+      background: rgba(26,22,18,0.08);
+      border-radius: 4px;
+      height: 32px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--white);
+      transition: width 0.4s ease;
+      min-width: 32px;
+    }
+    .bar-fill.c-alarm   { background: var(--alarm); }
+    .bar-fill.c-muted   { background: var(--muted); }
+    .bar-fill.c-gold    { background: var(--gold); color: var(--ink); }
+    .bar-fill.c-green   { background: var(--green); }
+    .bar-fill.c-dkgreen { background: #1E4229; }
+    .bar-pct {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .chart-axis {
+      margin-top: 18px;
+      padding-left: 194px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── INFO / CALLOUT ─────────────────────────────────────── */
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .info-box.alarm-box  { border-left-color: var(--alarm); }
+    .info-box.green-box  { border-left-color: var(--green); }
+    .info-box.muted-box  { border-left-color: var(--muted); }
+    .info-box .box-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .info-box p { font-size: 15px; margin: 0 0 10px; }
+    .info-box p:last-child { margin: 0; }
+
+    /* ── STAT GRID ──────────────────────────────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 5px;
+    }
+    .stat-card .lbl {
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .stat-card.alarm { border-left: 4px solid var(--alarm); }
+    .stat-card.alarm .num { color: var(--alarm); }
+    .stat-card.green { border-left: 4px solid var(--green); }
+    .stat-card.green .num { color: var(--green); }
+    .stat-card.gold  { border-left: 4px solid var(--gold); }
+    .stat-card.gold  .num { color: var(--gold); }
+
+    /* ── LIMITATION LIST ────────────────────────────────────── */
+    .lim-list {
+      list-style: none;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .lim-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14.5px;
+    }
+    .lim-list li .icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── HIGHLIGHT RESULT ───────────────────────────────────── */
+    .result-highlight {
+      background: var(--green);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin: 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .result-highlight .rh-num {
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      flex-shrink: 0;
+    }
+    .result-highlight .rh-context strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .result-highlight .rh-context p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin: 0;
+    }
+
+    /* ── BACK TO TOP ────────────────────────────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 18px;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-to-top:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: #A09080;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header-inner { flex-direction: column; }
+      .header-page-info { text-align: left; }
+      .bar-row { grid-template-columns: 120px 1fr 44px; }
+      .bar-label { font-size: 11.5px; }
+      .chart-axis { padding-left: 134px; }
+      .result-highlight { padding: 22px; }
+      .result-highlight .rh-num { font-size: 40px; }
+    }
+    @media (max-width: 480px) {
+      .bar-row { grid-template-columns: 90px 1fr 40px; }
+      .bar-label { font-size: 10.5px; }
+      .chart-axis { padding-left: 104px; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-label">MIT LiftLab 2026</div>
+      <div class="logo-title">Lift<span>Lab</span> 2026</div>
+      <div class="logo-sub">Tec de Monterrey · Campus SLP</div>
+    </div>
+    <div class="header-page-info">
+      <div class="header-page-title">Monte Carlo Simulation<br>Full Technical Report</div>
+      <div class="header-page-sub">Supplementary Research Document</div>
+      <a href="#" class="back-btn">← Back to Presentation</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav" aria-label="Page sections">
+  <div class="nav-inner">
+    <a href="#config">1. Configuration</a>
+    <a href="#effect-sizes">2. Effect Sizes</a>
+    <a href="#scenarios">3. Scenarios</a>
+    <a href="#chart">4. Visual Results</a>
+    <a href="#interpretation">5. Interpretation</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═════════════════════════ -->
+<main>
+
+  <!-- ── SECTION 1: CONFIGURATION ─────────────────────────── -->
+  <section class="section" id="config">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">
+        <span class="label">Section 1</span>
+        Simulation Configuration
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      The Monte Carlo model propagates uncertainty from published effect-size confidence intervals through a projected 5-year trajectory for a cohort of secondary-school students. Each scenario runs 5,000 independent trials to obtain a stable distribution of outcomes.
+    </p>
+
+    <div class="config-grid">
+      <div class="config-item highlight">
+        <div class="cfg-val">1,000</div>
+        <div class="cfg-key">Cohort size (students)</div>
+      </div>
+      <div class="config-item highlight">
+        <div class="cfg-val">5,000</div>
+        <div class="cfg-key">Simulation runs per scenario</div>
+      </div>
+      <div class="config-item">
+        <div class="cfg-val">42</div>
+        <div class="cfg-key">Random seed (reproducible)</div>
+      </div>
+      <div class="config-item">
+        <div class="cfg-val">1 · 3 · 5</div>
+        <div class="cfg-key">Time horizons (years)</div>
+      </div>
+      <div class="config-item">
+        <div class="cfg-val">12–15</div>
+        <div class="cfg-key">Cohort age range</div>
+      </div>
+    </div>
+
+    <div class="sensitivity-box">
+      <div class="sb-label">Sensitivity Analysis Dimensions</div>
+      <div class="sensitivity-dims">
+        <div class="sdim">
+          <div class="sdim-title">Adherence Range</div>
+          <div class="sdim-val">50 – 100%</div>
+          <div class="sdim-sub">Proportion of students complying with intervention activities each week</div>
+        </div>
+        <div class="sdim">
+          <div class="sdim-title">Dose Range</div>
+          <div class="sdim-val">0.5 – 3.0 h/wk</div>
+          <div class="sdim-sub">Weekly hours of structured intervention exposure per student</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="box-label">Reproducibility</div>
+      <p>All simulations use random seed 42. Full code available upon request. Results are stable across re-runs — the 5,000-trial count was chosen to ensure the standard error of the mean ΔBMI estimate is below 0.02 kg/m².</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: EFFECT SIZES ───────────────────────────── -->
+  <section class="section" id="effect-sizes">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">
+        <span class="label">Section 2</span>
+        Effect-Size Parameters
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Each intervention component is parameterized using effect sizes drawn from peer-reviewed meta-analyses. Confidence intervals from the original studies are used as the uncertainty bounds in the Monte Carlo sampling. A null-robustness check using a long-term null study is included as a conservative control.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Intervention Component</th>
+            <th>ΔBMI (kg/m²)</th>
+            <th>95% Confidence Interval</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Nutrition education alone</strong></td>
+            <td class="td-delta">−0.33</td>
+            <td class="td-ci">(−0.55, −0.11)</td>
+            <td class="td-source">Silveira et al. 2013</td>
+          </tr>
+          <tr>
+            <td><strong>Physical activity alone</strong></td>
+            <td class="td-delta">−0.13</td>
+            <td class="td-ci">(−0.22, −0.04)</td>
+            <td class="td-source">Cochrane review</td>
+          </tr>
+          <tr>
+            <td><strong>PA + nutrition combined</strong></td>
+            <td class="td-delta">−0.17</td>
+            <td class="td-ci">(−0.29, −0.06)</td>
+            <td class="td-source">Cochrane review</td>
+          </tr>
+          <tr>
+            <td><strong>Health ed, adolescents</strong> <span style="font-size:11px;color:var(--muted);">(z-score)</span></td>
+            <td class="td-delta">−0.06</td>
+            <td class="td-ci">(−0.10, −0.03)</td>
+            <td class="td-source">Brown et al. 2020</td>
+          </tr>
+          <tr>
+            <td><strong>Long-term null</strong> <span style="font-size:11px;color:var(--muted);">(robustness check)</span></td>
+            <td class="td-delta neg">0.00</td>
+            <td class="td-ci">(−0.05, +0.04)</td>
+            <td class="td-source">Hodder et al. 2021</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box alarm-box">
+      <div class="box-label">Null Robustness Check — Why It Is Included</div>
+      <p>Hodder et al. (2021) found no long-term BMI effect from school-based interventions. Including this in the simulation as a dedicated scenario reflects epistemic honesty about the uncertainty in long-term maintenance of effects. A null scenario that closely tracks the baseline confirms the model behaves correctly under conservative assumptions.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: SCENARIOS ──────────────────────────────── -->
+  <section class="section" id="scenarios">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">
+        <span class="label">Section 3</span>
+        Five Modelled Scenarios
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Five scenarios represent the range of plausible outcomes from no intervention through optimistic deployment. The central scenario — built on published point estimates — is our primary projection.
+    </p>
+
+    <div class="year0-box">
+      <div class="y0-item">
+        <div class="y0-label">Year 0 · Obesity Prevalence</div>
+        <div class="y0-val">31.9%</div>
+        <div class="y0-desc">Starting point, all scenarios</div>
+      </div>
+      <div class="y0-item">
+        <div class="y0-label">Year 0 · Overweight+ Prevalence</div>
+        <div class="y0-val">61.8%</div>
+        <div class="y0-desc">BMI ≥ overweight threshold</div>
+      </div>
+      <div class="y0-item">
+        <div class="y0-label">Cohort</div>
+        <div class="y0-val">1,000</div>
+        <div class="y0-desc">Students, ages 12–15</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Mean ΔBMI (kg/m²) at Yr 5</th>
+            <th>Overweight+ % at Yr 5</th>
+            <th>Obesity % at Yr 5</th>
+            <th>Key Takeaway</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sc-baseline">
+            <td>Baseline (no intervention) <span class="sc-tag status-quo">Status quo</span></td>
+            <td style="font-weight:700; color:var(--alarm);">+2.25</td>
+            <td>64.6%</td>
+            <td>31.8%</td>
+            <td style="font-size:13px; color:var(--muted);">Status quo trajectory — worsening over time</td>
+          </tr>
+          <tr class="sc-null">
+            <td>Null-robustness (Hodder 2021)</td>
+            <td style="color:var(--muted);">+2.24</td>
+            <td>64.5%</td>
+            <td>31.8%</td>
+            <td style="font-size:13px; color:var(--muted);">Tracks baseline; confirms model integrity</td>
+          </tr>
+          <tr class="sc-conservative">
+            <td>Conservative</td>
+            <td style="font-weight:700; color:var(--gold);">+2.02</td>
+            <td>62.6%</td>
+            <td>30.0%</td>
+            <td style="font-size:13px; color:var(--muted);">Modest but real benefit</td>
+          </tr>
+          <tr class="sc-central">
+            <td>Central (published estimates) <span class="sc-tag primary">Primary</span></td>
+            <td style="font-weight:700; color:var(--green);">+1.57</td>
+            <td>58.4%</td>
+            <td>26.4%</td>
+            <td style="font-size:13px; color:var(--muted);">Uses point estimates; main projection</td>
+          </tr>
+          <tr class="sc-optimistic">
+            <td>Optimistic (upper bound)</td>
+            <td style="font-weight:700; color:var(--green);">+1.09</td>
+            <td>53.8%</td>
+            <td>22.7%</td>
+            <td style="font-size:13px; color:var(--muted);">Upper bound; requires full adherence</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card green">
+        <div class="num">−5.4 pp</div>
+        <div class="lbl">Central scenario obesity reduction vs. baseline at Year 5</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="num">−9.1 pp</div>
+        <div class="lbl">Optimistic scenario obesity reduction vs. baseline at Year 5</div>
+      </div>
+      <div class="stat-card alarm">
+        <div class="num">−1.8 pp</div>
+        <div class="lbl">Conservative scenario obesity reduction vs. baseline at Year 5</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: CHART ──────────────────────────────────── -->
+  <section class="section" id="chart">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">
+        <span class="label">Section 4</span>
+        Obesity Prevalence at Year 5 — Visual Comparison
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      The following chart compares projected obesity prevalence at the 5-year mark across all five scenarios. The baseline (no intervention) is the reference. The central scenario — our primary projection — reduces obesity prevalence by approximately 5.7 percentage points.
+    </p>
+
+    <div class="chart-section">
+      <div class="chart-title">Year 5 Projection · Cohort n = 1,000</div>
+      <div class="chart-subtitle">Obesity Prevalence (%) by Scenario</div>
+
+      <div class="bar-chart">
+        <!-- Baseline: 36.4% of 100% scale -->
+        <div class="bar-row">
+          <div class="bar-label">No Intervention</div>
+          <div class="bar-track">
+            <div class="bar-fill c-alarm" style="width:72.8%;">36.4%</div>
+          </div>
+          <div class="bar-pct" style="color:var(--alarm);">36.4%</div>
+        </div>
+        <!-- Null: 32.0% -->
+        <div class="bar-row">
+          <div class="bar-label">Null-Robustness</div>
+          <div class="bar-track">
+            <div class="bar-fill c-muted" style="width:64%;">32.0%</div>
+          </div>
+          <div class="bar-pct" style="color:var(--muted);">32.0%</div>
+        </div>
+        <!-- Conservative: 30.0% -->
+        <div class="bar-row">
+          <div class="bar-label">Conservative</div>
+          <div class="bar-track">
+            <div class="bar-fill c-gold" style="width:60%;">30.0%</div>
+          </div>
+          <div class="bar-pct" style="color:var(--gold);">30.0%</div>
+        </div>
+        <!-- Central: 26.4% -->
+        <div class="bar-row">
+          <div class="bar-label">Central</div>
+          <div class="bar-track">
+            <div class="bar-fill c-green" style="width:52.8%;">26.4%</div>
+          </div>
+          <div class="bar-pct" style="color:var(--green);">26.4%</div>
+        </div>
+        <!-- Optimistic: 22.7% -->
+        <div class="bar-row">
+          <div class="bar-label">Optimistic</div>
+          <div class="bar-track">
+            <div class="bar-fill c-dkgreen" style="width:45.4%;">22.7%</div>
+          </div>
+          <div class="bar-pct" style="color:#1E4229;">22.7%</div>
+        </div>
+      </div>
+
+      <div class="chart-axis">
+        <span>0%</span>
+        <span>10%</span>
+        <span>20%</span>
+        <span>30%</span>
+        <span>36.4%</span>
+      </div>
+    </div>
+
+    <div class="result-highlight">
+      <div class="rh-num">−5.7 pp</div>
+      <div class="rh-context">
+        <strong>Central scenario: 5.7 percentage-point obesity reduction at Year 5</strong>
+        <p>Compared to the baseline no-intervention trajectory. In absolute terms, this corresponds to approximately 57 fewer students with obesity in a cohort of 1,000. The central scenario uses published point estimates from peer-reviewed meta-analyses.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: INTERPRETATION ────────────────────────── -->
+  <section class="section" id="interpretation">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">
+        <span class="label">Section 5</span>
+        Interpretation &amp; Limitations
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      The Monte Carlo model is a decision-support tool for estimating the expected range of outcomes under uncertainty. It is not a prediction of what will happen — it is a structured way to ask "what range of outcomes is consistent with what we know from the literature?"
+    </p>
+
+    <div class="info-box green-box">
+      <div class="box-label">Central Finding</div>
+      <p>Under published effect-size estimates, the intervention reduces obesity prevalence by approximately <strong>5.7 percentage points</strong> at the 5-year horizon. This is a meaningful public-health effect size for a school-based program.</p>
+    </div>
+
+    <ul class="lim-list">
+      <li>
+        <span class="icon">⚠</span>
+        <span><strong>Projection, not prediction.</strong> This model cannot account for unmeasured local factors, policy changes, or teacher-specific implementation quality. Real-world deployment requires a controlled pilot study with measured outcomes.</span>
+      </li>
+      <li>
+        <span class="icon">⚠</span>
+        <span><strong>Effect sizes from international studies.</strong> The meta-analyses used were not conducted specifically in Mexican secondary schools. Effect sizes may differ in this population due to baseline health status, cultural diet patterns, and school infrastructure.</span>
+      </li>
+      <li>
+        <span class="icon">⚠</span>
+        <span><strong>The null scenario is intentional.</strong> Hodder et al. (2021) represents studies where long-term effects faded. Including this scenario reflects the genuine possibility that short-term BMI gains do not persist. It is not a reason to abandon the intervention — it is a reason to design for maintenance.</span>
+      </li>
+      <li>
+        <span class="icon">⚠</span>
+        <span><strong>BMI as a proxy.</strong> BMI is an imperfect measure of health. The model does not capture changes in physical fitness, dietary quality, mental health, or academic performance, all of which are plausible secondary benefits of the intervention.</span>
+      </li>
+    </ul>
+
+    <div class="info-box muted-box">
+      <div class="box-label">Recommended Next Step</div>
+      <p>A 12-month pilot with a quasi-experimental design (treatment school + matched comparison school) would provide measured effect sizes in the target population, replacing the international estimates with locally-valid parameters and dramatically improving model accuracy.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <strong>MIT LiftLab 2026</strong> &nbsp;·&nbsp; Fernanda Ita &nbsp;·&nbsp; Alexis Marcos &nbsp;·&nbsp; Carlos Torres &nbsp;·&nbsp; Tec de Monterrey Campus SLP
+</footer>
+
+<!-- ═══════════════════════ BACK TO TOP ══════════════════ -->
+<a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+</body>
+</html>

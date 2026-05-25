@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytical Pipeline — MIT LiftLab 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:     #F4EFE6;
+      --ink:    #1A1612;
+      --alarm:  #B8332A;
+      --gold:   #B8862A;
+      --green:  #2D5E3E;
+      --muted:  #8A7D6E;
+      --card:   #EDE7DC;
+      --border: #D4C9B8;
+      --white:  #FFFFFF;
+      --radius: 8px;
+      --shadow: 0 2px 12px rgba(26,22,18,0.10);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .site-header {
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0;
+      position: relative;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo-area {}
+    .logo-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .logo-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--white);
+    }
+    .logo-title span { color: var(--gold); }
+    .logo-sub {
+      font-size: 13px;
+      font-weight: 400;
+      color: #A09080;
+      margin-top: 4px;
+    }
+    .header-page-info {
+      text-align: right;
+    }
+    .header-page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+    }
+    .header-page-sub {
+      font-size: 12px;
+      color: #A09080;
+      margin-top: 4px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid #A09080;
+      color: #C8B89A;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      cursor: default;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── STICKY NAV ─────────────────────────────────────────── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 2px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: inline-block;
+      padding: 13px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #A09080;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── MAIN LAYOUT ────────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── SECTION ────────────────────────────────────────────── */
+    .section {
+      margin-bottom: 72px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .section-title .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+    }
+
+    /* ── LEAD TEXT ──────────────────────────────────────────── */
+    .lead {
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    p { margin-bottom: 16px; color: var(--ink); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── STAT GRID ──────────────────────────────────────────── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .stat-card .lbl {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .stat-card.alarm { border-left: 4px solid var(--alarm); }
+    .stat-card.alarm .num { color: var(--alarm); }
+    .stat-card.gold { border-left: 4px solid var(--gold); }
+    .stat-card.gold .num { color: var(--gold); }
+    .stat-card.green { border-left: 4px solid var(--green); }
+    .stat-card.green .num { color: var(--green); }
+    .stat-card.ink { border-left: 4px solid var(--ink); }
+    .stat-card.ink .num { color: var(--ink); }
+
+    /* ── HERO STAT ──────────────────────────────────────────── */
+    .hero-stat {
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin: 28px 0;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-stat .big-num {
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--alarm);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      flex-shrink: 0;
+    }
+    .hero-stat .big-context {
+      color: #C8B89A;
+    }
+    .hero-stat .big-context strong {
+      display: block;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .hero-stat .big-context p {
+      font-size: 14px;
+      color: #A09080;
+      margin: 0;
+    }
+
+    /* ── ACTOR GRID ─────────────────────────────────────────── */
+    .actor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 24px 0;
+    }
+    .actor-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .actor-card .actor-n {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .actor-card .actor-type {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-top: 2px;
+      margin-bottom: 6px;
+    }
+    .actor-card .actor-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .total-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--gold);
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* ── INFO BOX ───────────────────────────────────────────── */
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .info-box.alarm-box { border-left-color: var(--alarm); }
+    .info-box.green-box { border-left-color: var(--green); }
+    .info-box .box-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .info-box p { font-size: 15px; color: var(--ink); margin: 0; }
+
+    /* ── FINDING LIST ───────────────────────────────────────── */
+    .finding-list {
+      list-style: none;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .finding-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+    }
+    .finding-list li .pct {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--alarm);
+      flex-shrink: 0;
+      min-width: 64px;
+      line-height: 1.1;
+    }
+    .finding-list li .pct.gold { color: var(--gold); }
+    .finding-list li .pct.green { color: var(--green); }
+    .finding-list li .desc {
+      font-size: 14.5px;
+      color: var(--ink);
+      padding-top: 2px;
+    }
+
+    /* ── GAP VISUAL ─────────────────────────────────────────── */
+    .gap-visual {
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      margin: 28px 0;
+    }
+    .gap-visual .gap-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .gap-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .gap-row:last-child { margin-bottom: 0; }
+    .gap-row .gap-label {
+      width: 230px;
+      font-size: 13px;
+      color: #C8B89A;
+      flex-shrink: 0;
+    }
+    .gap-bar-wrap {
+      flex: 1;
+      height: 28px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .gap-bar {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      transition: width 0.3s;
+    }
+    .gap-bar.intention { background: var(--gold); }
+    .gap-bar.action    { background: var(--alarm); }
+    .gap-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .gap-arrow .gap-label { color: var(--muted); }
+    .gap-arrow .gap-num {
+      flex: 1;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--alarm);
+      text-align: center;
+    }
+
+    /* ── PHASE BADGE ────────────────────────────────────────── */
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+
+    /* ── TWO-COL ────────────────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── HONESTY BOX ────────────────────────────────────────── */
+    .honesty-box {
+      background: var(--green);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin: 24px 0;
+      color: var(--white);
+    }
+    .honesty-box .hb-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    .honesty-box p {
+      color: rgba(255,255,255,0.92);
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .honesty-box p:last-child { margin-bottom: 0; }
+
+    /* ── BACK TO TOP ────────────────────────────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 18px;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-to-top:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: #A09080;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header-inner { flex-direction: column; }
+      .header-page-info { text-align: left; }
+      .hero-stat { padding: 24px; }
+      .hero-stat .big-num { font-size: 52px; }
+      .gap-row .gap-label { width: 160px; font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .section-title { font-size: 18px; }
+      .stat-card .num { font-size: 30px; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-label">MIT LiftLab 2026</div>
+      <div class="logo-title">Lift<span>Lab</span> 2026</div>
+      <div class="logo-sub">Tec de Monterrey · Campus SLP</div>
+    </div>
+    <div class="header-page-info">
+      <div class="header-page-title">Analytical Pipeline<br>Full Technical Detail</div>
+      <div class="header-page-sub">Supplementary Research Document</div>
+      <a href="#" class="back-btn">← Back to Presentation</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav" aria-label="Page sections">
+  <div class="nav-inner">
+    <a href="#data-foundation">1. Data Foundation</a>
+    <a href="#phase1">2. Phase 1 — Regression</a>
+    <a href="#phase2">3. Phase 2 — ML</a>
+    <a href="#phase3">4. Phase 3 — Survey</a>
+    <a href="#validity">5. Statistical Validity</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═════════════════════════ -->
+<main>
+
+  <!-- ── SECTION 1: DATA FOUNDATION ──────────────────────── -->
+  <section class="section" id="data-foundation">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">
+        <span class="label">Section 1</span>
+        Data Foundation
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Our analysis draws from two independent data sources: a large multi-actor field dataset collected by MIT, and a primary survey conducted by our team in San Luis Potosí. Together they cover four distinct actor types along the food-access chain.
+    </p>
+
+    <div class="total-badge">
+      <span>Total records analyzed:</span>
+      <span style="font-size:20px;letter-spacing:-0.02em;">3,144</span>
+    </div>
+
+    <div class="actor-grid">
+      <div class="actor-card">
+        <div class="actor-n">1,135</div>
+        <div class="actor-type">Shopper Dataset</div>
+        <div class="actor-desc">Purchasing behavior, demographics, budget constraints, item-level observations</div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-n">221</div>
+        <div class="actor-type">Nanostore Operator</div>
+        <div class="actor-desc">Store inventory, pricing strategies, product availability by category</div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-n">236</div>
+        <div class="actor-type">Shopkeeper</div>
+        <div class="actor-desc">Stocking decisions, supplier relationships, demand-side observations</div>
+      </div>
+      <div class="actor-card">
+        <div class="actor-n">1,448</div>
+        <div class="actor-type">Last-Mile Delivery</div>
+        <div class="actor-desc">Product offerings to stores, healthy product availability rates</div>
+      </div>
+    </div>
+
+    <div class="info-box green-box">
+      <div class="box-label">Own Primary Survey</div>
+      <p><strong>104 respondents</strong> in San Luis Potosí, conducted independently by the research team. Provides local context to validate findings from the MIT dataset.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: PHASE 1 ────────────────────────────────── -->
+  <section class="section" id="phase1">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">
+        <span class="label">Section 2</span>
+        Phase 1 — Linear Regression
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="phase-badge">Phase 1 · OLS Regression</div>
+
+    <p class="lead">
+      The first analytical phase tested whether demographic and structural variables could predict obesity outcomes across Mexican states using ordinary least-squares regression.
+    </p>
+
+    <div class="two-col">
+      <div>
+        <p><strong>Model specification:</strong> OLS regression of nanostore density versus child obesity rates across all 32 Mexican states, controlling for the marginalization index and urbanization rate.</p>
+        <p><strong>Validation strategy:</strong> 5-fold cross-validation to test generalizability. All folds returned R² values near zero; one fold returned a negative R², indicating no predictive signal.</p>
+      </div>
+      <div class="info-box alarm-box">
+        <div class="box-label">Cross-Validation Result</div>
+        <p>All 5 folds: R² ≈ 0 or negative.<br />No predictive signal detected.<br />The model does not generalize.</p>
+      </div>
+    </div>
+
+    <div class="hero-stat">
+      <div class="big-num">R² = 0.032</div>
+      <div class="big-context">
+        <strong>Regression explains 3.2% of variance</strong>
+        <p>Nanostore density, marginalization index, and urbanization rate together explain only 3.2% of the observed variation in child obesity across 32 states. This is not a statistically meaningful signal.</p>
+        <p style="margin-top:10px; color: var(--gold); font-weight:600;">→ Purchasing behavior does not significantly depend on demographic predictors. The problem is structural, not individual.</p>
+      </div>
+    </div>
+
+    <div class="honesty-box">
+      <div class="hb-label">Interpretation — Why This Null Result Matters</div>
+      <p>A failed regression is not a wasted analysis. It tells us that simple demographic proxies cannot explain why people make unhealthy food choices at nanostores. The mechanism is not "poor people in dense areas buy bad food." The mechanism is deeper — structural unavailability, time constraints, and broken supply chains. This null finding redirected the entire research design.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: PHASE 2 ────────────────────────────────── -->
+  <section class="section" id="phase2">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">
+        <span class="label">Section 3</span>
+        Phase 2 — Extended Datasets &amp; ML
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="phase-badge">Phase 2 · Random Forest Classifier</div>
+
+    <p class="lead">
+      Following the regression null result, we expanded the feature set with national datasets and applied a machine learning approach to test whether any combination of variables could predict healthy purchasing behavior.
+    </p>
+
+    <div class="info-box">
+      <div class="box-label">Additional Datasets Incorporated</div>
+      <p>ENSANUT physical activity data · ENSANUT food intake data · ENIGH household spending data · Anuarios Estadísticos morbidity data</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card alarm">
+        <div class="num">0.55</div>
+        <div class="lbl">Random Forest AUC<br>(chance = 0.50)</div>
+      </div>
+      <div class="stat-card alarm">
+        <div class="num">60.8%</div>
+        <div class="lbl">Shoppers who picked up at least one unhealthy item</div>
+      </div>
+      <div class="stat-card alarm">
+        <div class="num">50.3%</div>
+        <div class="lbl">Shoppers who picked up ONLY unhealthy items</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="num">23.7%</div>
+        <div class="lbl">Shoppers who picked up anything healthy</div>
+      </div>
+      <div class="stat-card alarm">
+        <div class="num">66%</div>
+        <div class="lbl">Last-mile deliveries offering no healthy products to stores</div>
+      </div>
+    </div>
+
+    <div style="margin: 28px 0 16px;">
+      <div class="section-title" style="font-size:17px; margin-bottom:16px;">Intention–Action Gap</div>
+      <p style="margin-bottom:20px;">Perhaps the most consequential finding: there is an enormous gap between what people say they want and what they actually buy. This gap points to a structural barrier, not a motivational one.</p>
+    </div>
+
+    <ul class="finding-list">
+      <li>
+        <div class="pct gold">85%</div>
+        <div class="desc"><strong>Know their purchases are unhealthy.</strong> Awareness is not the bottleneck — this population understands the problem.</div>
+      </li>
+      <li>
+        <div class="pct gold">63%</div>
+        <div class="desc"><strong>Say they would buy healthier if they could.</strong> Willingness exists. Capacity and access do not.</div>
+      </li>
+      <li>
+        <div class="pct gold">65%</div>
+        <div class="desc"><strong>Want more healthy options available.</strong> The demand for healthier supply is explicit and widespread.</div>
+      </li>
+      <li>
+        <div class="pct alarm">24%</div>
+        <div class="desc"><strong>Actually buy healthy products.</strong> Only one-in-four follow through, despite the stated intention.</div>
+      </li>
+    </ul>
+
+    <div class="gap-visual">
+      <div class="gap-title">Intention vs. Action — The 39-Point Gap</div>
+      <div class="gap-row">
+        <div class="gap-label">Would buy healthier (intention)</div>
+        <div class="gap-bar-wrap">
+          <div class="gap-bar intention" style="width:63%;">63%</div>
+        </div>
+      </div>
+      <div class="gap-row">
+        <div class="gap-label">Actually buy healthy (action)</div>
+        <div class="gap-bar-wrap">
+          <div class="gap-bar action" style="width:24%;">24%</div>
+        </div>
+      </div>
+      <div class="gap-arrow">
+        <div class="gap-label" style="color:#555;">&nbsp;</div>
+        <div class="gap-num">39-point gap between intention and action</div>
+      </div>
+    </div>
+
+    <div class="info-box alarm-box">
+      <div class="box-label">AUC = 0.55 — What This Means</div>
+      <p>A Random Forest classifier with AUC of 0.55 is barely above random chance (0.50). Even with expanded features including activity data, spending data, and morbidity data, the model cannot reliably predict who will make healthy purchases. This confirms that healthy purchasing behavior is driven by <strong>contextual constraints</strong>, not individual characteristics we can easily measure.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: PHASE 3 ────────────────────────────────── -->
+  <section class="section" id="phase3">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">
+        <span class="label">Section 4</span>
+        Phase 3 — Primary Survey, SLP
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="phase-badge">Phase 3 · Primary Fieldwork</div>
+
+    <p class="lead">
+      To validate findings in local context, our team conducted an independent survey in San Luis Potosí (n = 104). The results converge remarkably with the MIT dataset, providing cross-source validation.
+    </p>
+
+    <div class="stat-grid">
+      <div class="stat-card ink">
+        <div class="num">104</div>
+        <div class="lbl">Survey respondents, San Luis Potosí</div>
+      </div>
+      <div class="stat-card alarm">
+        <div class="num">62%</div>
+        <div class="lbl">Top barrier: lack of time due to work</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="num">80/94</div>
+        <div class="lbl">Would change habits with more time or resources</div>
+      </div>
+    </div>
+
+    <div style="margin: 24px 0 12px;">
+      <div class="section-title" style="font-size:16px; margin-bottom:14px;">Solutions Respondents Want Most</div>
+    </div>
+    <ul class="finding-list">
+      <li>
+        <div class="pct alarm">41%</div>
+        <div class="desc"><strong>Nutrition education</strong> — the top requested intervention. Knowledge delivered in context, not pamphlets.</div>
+      </li>
+      <li>
+        <div class="pct gold">35%</div>
+        <div class="desc"><strong>Affordable healthy options</strong> — price is a real barrier; subsidized access is a direct ask.</div>
+      </li>
+      <li>
+        <div class="pct green">24%</div>
+        <div class="desc"><strong>Time-saving recipes</strong> — a practical, time-sensitive household need for working families.</div>
+      </li>
+    </ul>
+
+    <div class="honesty-box">
+      <div class="hb-label">Cross-Source Convergence — Key Validation</div>
+      <p><strong>Two independent data sources, same diagnosis:</strong> The MIT multi-actor field dataset (3,040 records) and our own SLP survey (104 respondents) converge on the same central finding: the primary barrier to healthy food behavior is structural — time, access, and supply-chain availability — not individual knowledge or motivation.</p>
+      <p>This convergence across independent methods substantially strengthens the credibility of the research diagnosis and the design of the proposed intervention.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5: STATISTICAL VALIDITY ──────────────────── -->
+  <section class="section" id="validity">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">
+        <span class="label">Section 5</span>
+        Statistical Validity &amp; Honest Reporting
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      We report all results, including null findings. Scientific integrity requires that failures be documented as clearly as successes.
+    </p>
+
+    <div class="two-col">
+      <div class="info-box green-box">
+        <div class="box-label">No Cherry-Picking</div>
+        <p>The regression failure (R² = 0.032) was reported as our <em>first</em> finding, not concealed. Null results in Phase 1 and near-chance AUC in Phase 2 are prominently disclosed.</p>
+      </div>
+      <div class="info-box">
+        <div class="box-label">Data &amp; Code Availability</div>
+        <p>All analytical code and processed datasets are available upon request to competition reviewers. Raw MIT data subject to original data-sharing agreements.</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="box-label">Why Null Results Are Valuable</div>
+      <p>The two near-null machine learning results (R² = 0.032, AUC = 0.55) are not failures of analysis — they are findings. They rule out simple demographic and behavioral explanations for the obesity-purchasing relationship, forcing us toward the structural diagnosis that motivates the intervention design. A study that only reports positive results would have led to the wrong conclusions.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <strong>MIT LiftLab 2026</strong> &nbsp;·&nbsp; Fernanda Ita &nbsp;·&nbsp; Alexis Marcos &nbsp;·&nbsp; Carlos Torres &nbsp;·&nbsp; Tec de Monterrey Campus SLP
+</footer>
+
+<!-- ═══════════════════════ BACK TO TOP ══════════════════ -->
+<a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+</body>
+</html>
