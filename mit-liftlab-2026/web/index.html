@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIT LiftLab 2026 — Recursos QR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:     #F4EFE6;
+      --ink:    #1A1612;
+      --alarm:  #B8332A;
+      --gold:   #B8862A;
+      --green:  #2D5E3E;
+      --muted:  #8A7D6E;
+      --card:   #EDE7DC;
+      --border: #D4C9B8;
+      --white:  #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─── */
+    header {
+      background: var(--ink);
+      padding: 28px 24px 24px;
+      text-align: center;
+    }
+    .header-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .header-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: #A09080;
+      margin-top: 6px;
+    }
+
+    /* ── MAIN ─── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 64px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* ── QR GRID ─── */
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .qr-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--ink);
+      transition: box-shadow 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .qr-card:hover {
+      box-shadow: 0 8px 32px rgba(26,22,18,0.14);
+      transform: translateY(-2px);
+    }
+
+    .qr-card-top {
+      padding: 20px 20px 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .qr-card-top img {
+      width: 160px;
+      height: 160px;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .qr-card-body {
+      padding: 12px 16px 18px;
+      border-top: 1px solid var(--border);
+      flex: 1;
+    }
+    .qr-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+    }
+    .tag-alarm  { background: var(--alarm); color: var(--white); }
+    .tag-gold   { background: var(--gold);  color: var(--ink);   }
+    .tag-green  { background: var(--green); color: var(--white); }
+    .tag-ink    { background: var(--ink);   color: var(--gold);  }
+
+    .qr-card-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.3;
+      margin-bottom: 5px;
+    }
+    .qr-card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── PRINT HINT ─── */
+    .print-hint {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .print-hint strong { color: var(--ink); }
+
+    /* ── PRINT STYLES ─── */
+    @media print {
+      header { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .qr-card { break-inside: avoid; box-shadow: none !important; border: 1px solid #ccc !important; }
+      .print-hint { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .qr-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .qr-card-top img { width: 120px; height: 120px; }
+      .qr-card-name { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">MIT LiftLab 2026 · Tec de Monterrey SLP</div>
+  <div class="header-title">Recursos de la Presentación</div>
+  <div class="header-sub">Escanea el QR para ver el dashboard completo</div>
+</header>
+
+<main>
+  <div class="section-label">Dashboards de apoyo — escanea o toca el QR</div>
+
+  <div class="qr-grid">
+
+    <!-- 1. Methodology -->
+    <a class="qr-card" href="methodology.html" target="_blank">
+      <div class="qr-card-top">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=https://torrescarlos021.github.io/mit-liftlab-2026/web/methodology.html"
+          alt="QR — Pipeline Analítico"
+          loading="lazy"
+        />
+      </div>
+      <div class="qr-card-body">
+        <span class="qr-tag tag-alarm">R² · AUC · Datos</span>
+        <div class="qr-card-name">Pipeline Analítico</div>
+        <div class="qr-card-desc">Metodología completa, modelos ML, gap de 39 puntos y validación estadística</div>
+      </div>
+    </a>
+
+    <!-- 2. Monte Carlo -->
+    <a class="qr-card" href="montecarlo.html" target="_blank">
+      <div class="qr-card-top">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=https://torrescarlos021.github.io/mit-liftlab-2026/web/montecarlo.html"
+          alt="QR — Monte Carlo"
+          loading="lazy"
+        />
+      </div>
+      <div class="qr-card-body">
+        <span class="qr-tag tag-green">5,000 simulaciones</span>
+        <div class="qr-card-name">Monte Carlo</div>
+        <div class="qr-card-desc">5 escenarios al año 5, parámetros de efecto, honestidad epistémica</div>
+      </div>
+    </a>
+
+    <!-- 3. Experts -->
+    <a class="qr-card" href="experts.html" target="_blank">
+      <div class="qr-card-top">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=https://torrescarlos021.github.io/mit-liftlab-2026/web/experts.html"
+          alt="QR — Validación Expertos"
+          loading="lazy"
+        />
+      </div>
+      <div class="qr-card-body">
+        <span class="qr-tag tag-gold">5 expertos</span>
+        <div class="qr-card-name">Validación de Expertos</div>
+        <div class="qr-card-desc">Entrevistas, temas convergentes, refinamientos post-validación</div>
+      </div>
+    </a>
+
+    <!-- 4. Videos -->
+    <a class="qr-card" href="videos.html" target="_blank">
+      <div class="qr-card-top">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=10&data=https://torrescarlos021.github.io/mit-liftlab-2026/web/videos.html"
+          alt="QR — Videos Testimoniales"
+          loading="lazy"
+        />
+      </div>
+      <div class="qr-card-body">
+        <span class="qr-tag tag-ink">Testimonios</span>
+        <div class="qr-card-name">Videos Testimoniales</div>
+        <div class="qr-card-desc">Grabaciones de los 5 expertos, citas clave y convergencia de perspectivas</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="print-hint">
+    <strong>Tip:</strong> Puedes imprimir esta página (Ctrl+P) para tener los 4 QR en papel. O guarda este link para compartirlo: <strong>torrescarlos021.github.io/mit-liftlab-2026/web/</strong>
+  </div>
+</main>
+
+</body>
+</html>
