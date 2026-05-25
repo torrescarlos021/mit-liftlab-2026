@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expert Interviews — MIT LiftLab 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:     #F4EFE6;
+      --ink:    #1A1612;
+      --alarm:  #B8332A;
+      --gold:   #B8862A;
+      --green:  #2D5E3E;
+      --muted:  #8A7D6E;
+      --card:   #EDE7DC;
+      --border: #D4C9B8;
+      --white:  #FFFFFF;
+      --radius: 8px;
+      --shadow: 0 2px 12px rgba(26,22,18,0.10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .site-header { background: var(--ink); }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo-label { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .logo-title { font-size: 28px; font-weight: 800; line-height: 1.15; color: var(--white); }
+    .logo-title span { color: var(--gold); }
+    .logo-sub { font-size: 13px; font-weight: 400; color: #A09080; margin-top: 4px; }
+    .header-page-info { text-align: right; }
+    .header-page-title { font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .header-page-sub { font-size: 12px; color: #A09080; margin-top: 4px; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid #A09080;
+      color: #C8B89A;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      cursor: default;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── STICKY NAV ─────────────────────────────────────────── */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 2px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-inner a {
+      display: inline-block;
+      padding: 13px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #A09080;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .nav-inner a:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ── MAIN ───────────────────────────────────────────────── */
+    main { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── SECTION ────────────────────────────────────────────── */
+    .section { margin-bottom: 72px; }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title { font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+    .section-title .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .divider { height: 1px; background: var(--border); margin-bottom: 28px; }
+    .lead { font-size: 17px; font-weight: 400; color: var(--ink); line-height: 1.7; margin-bottom: 24px; }
+    p { margin-bottom: 16px; color: var(--ink); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── INFO BOX ───────────────────────────────────────────── */
+    .info-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .info-box.alarm-box { border-left-color: var(--alarm); }
+    .info-box.green-box { border-left-color: var(--green); }
+    .info-box .box-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .info-box p { font-size: 15px; color: var(--ink); margin: 0; }
+
+    /* ── EXPERT CARD ────────────────────────────────────────── */
+    .expert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 28px 0;
+    }
+    .expert-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .expert-card-header {
+      background: var(--ink);
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .expert-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+    .expert-meta {}
+    .expert-name { font-size: 16px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .expert-title { font-size: 12px; color: #A09080; margin-top: 3px; }
+    .expert-role-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+      margin-top: 6px;
+    }
+    .expert-card-body { padding: 20px 24px; }
+    .expert-card-body .context-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .expert-card-body p { font-size: 14px; color: var(--ink); line-height: 1.6; margin-bottom: 12px; }
+
+    /* ── VIDEO PLACEHOLDER ──────────────────────────────────── */
+    .video-placeholder {
+      background: var(--ink);
+      border-radius: var(--radius);
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 14px 0 0;
+      min-height: 180px;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(255,255,255,0.02) 20px,
+        rgba(255,255,255,0.02) 40px
+      );
+    }
+    .play-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .play-icon svg { width: 20px; height: 20px; fill: var(--ink); margin-left: 3px; }
+    .video-label { font-size: 12px; font-weight: 600; color: #A09080; text-align: center; position: relative; z-index: 1; }
+    .video-duration { font-size: 11px; color: #706050; position: relative; z-index: 1; }
+
+    /* ── QUOTE BLOCK ────────────────────────────────────────── */
+    .quote-block {
+      border-left: 3px solid var(--gold);
+      padding: 14px 20px;
+      margin: 14px 0 0;
+      background: rgba(184,134,42,0.07);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .quote-block blockquote {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .quote-block cite {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* ── THEME SECTION ──────────────────────────────────────── */
+    .theme-list { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; }
+    .theme-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+    }
+    .theme-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .theme-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .convergence-dots { display: flex; gap: 4px; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .dot.filled { background: var(--gold); }
+    .dot.filled.strong { background: var(--alarm); }
+    .theme-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+    .convergence-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+
+    /* ── HONESTY BOX ────────────────────────────────────────── */
+    .honesty-box {
+      background: var(--green);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin: 24px 0;
+      color: var(--white);
+    }
+    .honesty-box .hb-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    .honesty-box p { color: rgba(255,255,255,0.92); font-size: 15px; margin-bottom: 10px; }
+    .honesty-box p:last-child { margin-bottom: 0; }
+
+    /* ── PROTOCOL GRID ──────────────────────────────────────── */
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 640px) { .protocol-grid { grid-template-columns: 1fr; } }
+    .protocol-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+    .protocol-item .pi-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .protocol-item .pi-value { font-size: 15px; font-weight: 600; color: var(--ink); }
+
+    /* ── BACK TO TOP ────────────────────────────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      background: var(--ink);
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 18px;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-to-top:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: #A09080;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: var(--gold); }
+
+    @media (max-width: 768px) {
+      .header-inner { flex-direction: column; }
+      .header-page-info { text-align: left; }
+      .expert-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-label">MIT LiftLab 2026</div>
+      <div class="logo-title">Lift<span>Lab</span> 2026</div>
+      <div class="logo-sub">Tec de Monterrey · Campus SLP</div>
+    </div>
+    <div class="header-page-info">
+      <div class="header-page-title">Expert Testimonial<br>Video Interviews</div>
+      <div class="header-page-sub">Supplementary — Validation Materials</div>
+      <a href="experts.html" class="back-btn">← Full Interview Notes</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ STICKY NAV ═══════════════════ -->
+<nav class="sticky-nav" aria-label="Page sections">
+  <div class="nav-inner">
+    <a href="#overview">Overview</a>
+    <a href="#expert-1">Dr. Olais</a>
+    <a href="#expert-2">Dr. Zúñiga</a>
+    <a href="#expert-3">Mtro. Torres</a>
+    <a href="#expert-4">Tereso Pedraza</a>
+    <a href="#expert-5">Amiris Pérez</a>
+    <a href="#themes">Key Themes</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═════════════════════════ -->
+<main>
+
+  <!-- ── OVERVIEW ──────────────────────────────────────────── -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-number">0</div>
+      <div class="section-title">
+        <span class="label">Video Testimonials</span>
+        Five Experts, One Converging Diagnosis
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      We conducted semi-structured video interviews with five independent experts — representing educational research, school administration, classroom practice, and fitness pedagogy. Their independent accounts corroborate the structural diagnosis at the heart of our research.
+    </p>
+
+    <div class="info-box green-box">
+      <div class="box-label">Validation Protocol</div>
+      <p>Each interview lasted 30–45 minutes. Participants were briefed on the research question but not on our findings, to avoid anchoring their responses. All recordings were made with informed consent. Thematic analysis applied convergence scoring: 4–5/5 experts endorsing a theme = <strong>strong</strong>; 3/5 = <strong>converging</strong>.</p>
+    </div>
+
+    <div class="protocol-grid">
+      <div class="protocol-item">
+        <div class="pi-label">Interview Format</div>
+        <div class="pi-value">Semi-structured · 8 core questions + 2–3 role-specific</div>
+      </div>
+      <div class="protocol-item">
+        <div class="pi-label">Recording</div>
+        <div class="pi-value">Audio-video, informed consent obtained</div>
+      </div>
+      <div class="protocol-item">
+        <div class="pi-label">Analysis Method</div>
+        <div class="pi-value">Thematic coding: convergence, divergence, unexpected findings</div>
+      </div>
+      <div class="protocol-item">
+        <div class="pi-label">Convergence Threshold</div>
+        <div class="pi-value">Strong ≥ 4/5 experts · Converging = 3/5</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERT 1 ───────────────────────────────────────────── -->
+  <section class="section" id="expert-1">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">
+        <span class="label">Expert #1 · Educational Research</span>
+        Dr. José Manuel Olais Govea
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="expert-grid">
+      <div>
+        <div class="expert-card">
+          <div class="expert-card-header">
+            <div class="expert-num">01</div>
+            <div class="expert-meta">
+              <div class="expert-name">Dr. José Manuel Olais Govea</div>
+              <div class="expert-title">Tec de Monterrey, Campus SLP</div>
+              <span class="expert-role-badge">Educational Research</span>
+            </div>
+          </div>
+          <div class="expert-card-body">
+            <div class="context-label">Research Focus</div>
+            <p>Curriculum design and health promotion within formal education systems. Expert on integrating health content into the Vida Saludable axis of the NEM framework.</p>
+            <div class="context-label">Key Contribution</div>
+            <p>Validated that the NEM curriculum already contains the structural hooks our intervention leverages — no new subject required. Confirmed that the Vida Saludable axis is frequently underimplemented due to insufficient teacher training.</p>
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-label">Interview Recording — Dr. Olais Govea</div>
+          <div class="video-duration">~35 minutes · Recorded April 2026</div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="box-label">Core Position</div>
+          <p>"The issue is not curriculum design — the NEM framework is actually well-structured. The gap is at the implementation layer. Teachers receive the plan but not the tools or time to execute the health components meaningfully."</p>
+        </div>
+        <div class="quote-block">
+          <blockquote>"El currículo tiene los ejes. Lo que falta es la formación docente para activarlos. Si le das al maestro 8 horas de capacitación relevante, puedes cambiar completamente cómo se enseña Vida Saludable."</blockquote>
+          <cite>Dr. Olais Govea · Interview, April 2026</cite>
+        </div>
+        <div class="info-box green-box" style="margin-top:16px;">
+          <div class="box-label">Impact on Intervention Design</div>
+          <p>Led to the inclusion of Component C (Teacher CPD, 8h + 4h optional) as a non-negotiable part of the intervention. Without this, Dr. Olais estimates adoption rate below 20%.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERT 2 ───────────────────────────────────────────── -->
+  <section class="section" id="expert-2">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">
+        <span class="label">Expert #2 · Educational Research</span>
+        Dr. Leopoldo Zúñiga Silva
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="expert-grid">
+      <div>
+        <div class="expert-card">
+          <div class="expert-card-header">
+            <div class="expert-num">02</div>
+            <div class="expert-meta">
+              <div class="expert-name">Dr. Leopoldo Zúñiga Silva</div>
+              <div class="expert-title">Tec de Monterrey, Campus SLP</div>
+              <span class="expert-role-badge">Educational Research</span>
+            </div>
+          </div>
+          <div class="expert-card-body">
+            <div class="context-label">Research Focus</div>
+            <p>Adolescent behavior change and health education methodology. Specialized in evidence-based curriculum interventions at the secondary level.</p>
+            <div class="context-label">Key Contribution</div>
+            <p>Provided behavioral science grounding for the 12–15 age-target rationale. Confirmed that habits formed in early adolescence have a significantly higher persistence rate into adulthood than those acquired later.</p>
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-label">Interview Recording — Dr. Zúñiga Silva</div>
+          <div class="video-duration">~40 minutes · Recorded April 2026</div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="box-label">Core Position</div>
+          <p>"At 12–15, students are already making independent purchasing decisions. They visit nanostores on their own. That autonomy, combined with neurological plasticity at this stage, makes this the optimal intervention window."</p>
+        </div>
+        <div class="quote-block">
+          <blockquote>"La brecha entre intención y acción que mencionan no me sorprende. Lo que sí me sorprende es que sea tan grande: 39 puntos. Eso no es falta de motivación. Es un entorno que está trabajando contra la persona."</blockquote>
+          <cite>Dr. Zúñiga Silva · Interview, April 2026</cite>
+        </div>
+        <div class="info-box green-box" style="margin-top:16px;">
+          <div class="box-label">Impact on Intervention Design</div>
+          <p>Confirmed the age-targeting rationale and recommended including a "food environment mapping" activity (Component B audit module) to make structural barriers visible to students themselves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERT 3 ───────────────────────────────────────────── -->
+  <section class="section" id="expert-3">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">
+        <span class="label">Expert #3 · Institutional Implementation</span>
+        MEd Juan Carlos Torres
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="expert-grid">
+      <div>
+        <div class="expert-card">
+          <div class="expert-card-header">
+            <div class="expert-num">03</div>
+            <div class="expert-meta">
+              <div class="expert-name">MEd Juan Carlos Torres</div>
+              <div class="expert-title">Director, Secundaria Técnica No. 78 · Matehuala, SLP</div>
+              <span class="expert-role-badge">Institutional Implementation</span>
+            </div>
+          </div>
+          <div class="expert-card-body">
+            <div class="context-label">Role Context</div>
+            <p>Active school director with direct responsibility for implementing national curriculum changes at the school level. Manages a secondary school in a semi-urban community with direct exposure to nanostore-dependent students.</p>
+            <div class="context-label">Key Contribution</div>
+            <p>Provided real-world feasibility assessment. Identified that teacher time is the most constrained resource — any CPD module over 12 hours will face resistance. Confirmed the 8+4h format as "workable." Flagged the family bridge frequency as needing adjustment for working-class families.</p>
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-label">Interview Recording — MEd Torres</div>
+          <div class="video-duration">~32 minutes · Recorded April 2026</div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="box-label">Core Position</div>
+          <p>"Everything depends on whether the director decides this is a priority. If you want this to scale, you need to give directors a concrete, low-burden implementation package — not a philosophical framework. Show them what happens on Week 1."</p>
+        </div>
+        <div class="quote-block">
+          <blockquote>"El 66% de repartidores que no ofrecen productos sanos — eso lo veo en mi comunidad. La tiendita frente a la escuela literalmente no tiene opciones. El maestro de EF no puede resolver eso solo, pero puede crear conciencia en los estudiantes para que hagan presión."</blockquote>
+          <cite>MEd J.C. Torres · Interview, April 2026</cite>
+        </div>
+        <div class="info-box alarm-box" style="margin-top:16px;">
+          <div class="box-label">Key Refinement Triggered</div>
+          <p>Revised the family bridge module from weekly to monthly cadence, and redesigned it as an "invitation" rather than homework — directly reducing administrative burden on both teachers and families.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERT 4 ───────────────────────────────────────────── -->
+  <section class="section" id="expert-4">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">
+        <span class="label">Expert #4 · Classroom Practice</span>
+        José Tereso Pedraza
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="expert-grid">
+      <div>
+        <div class="expert-card">
+          <div class="expert-card-header">
+            <div class="expert-num">04</div>
+            <div class="expert-meta">
+              <div class="expert-name">José Tereso Pedraza</div>
+              <div class="expert-title">Secondary-school Teacher · Fitness Practitioner</div>
+              <span class="expert-role-badge">Classroom Practice</span>
+            </div>
+          </div>
+          <div class="expert-card-body">
+            <div class="context-label">Role Context</div>
+            <p>Active secondary-school teacher with additional background in personal fitness instruction. Provides dual perspective: formal classroom experience and applied health behavior change from one-on-one coaching.</p>
+            <div class="context-label">Key Contribution</div>
+            <p>Brought the practitioner lens: what activities actually work within a 50-minute PE session vs. what looks good on paper. Recommended the "healthy snack on ≤20 MXN budget" challenge as a high-engagement, low-cost activity that directly addresses the price barrier students identify.</p>
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-label">Interview Recording — J.T. Pedraza</div>
+          <div class="video-duration">~28 minutes · Recorded April 2026</div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="box-label">Core Position</div>
+          <p>"The problem is not that kids don't know what's healthy — most of them do. The problem is that when they're hungry after school, standing in front of a nanostore with 20 pesos, everything available is chips and soda. We need to teach them what to ask for, not just what to avoid."</p>
+        </div>
+        <div class="quote-block">
+          <blockquote>"Les digo a mis alumnos: tienes 20 pesos, necesitas rendir toda la tarde. ¿Qué compras? La mayoría elige lo que le ofrecen porque no han practicado elegir. Eso es entrenable. Igual que un movimiento atlético."</blockquote>
+          <cite>J.T. Pedraza · Interview, April 2026</cite>
+        </div>
+        <div class="info-box green-box" style="margin-top:16px;">
+          <div class="box-label">Impact on Intervention Design</div>
+          <p>The "healthy snack on a real budget" activity (Component A, active literacy session) came directly from this interview. Also informed the decision to ground nutrition education in practical scenarios, not abstract dietary guidelines.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERT 5 ───────────────────────────────────────────── -->
+  <section class="section" id="expert-5">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">
+        <span class="label">Expert #5 · Student / Emerging Educator</span>
+        Amiris Pérez
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="expert-grid">
+      <div>
+        <div class="expert-card">
+          <div class="expert-card-header">
+            <div class="expert-num">05</div>
+            <div class="expert-meta">
+              <div class="expert-name">Amiris Pérez</div>
+              <div class="expert-title">Education Undergraduate · Fitness Background</div>
+              <span class="expert-role-badge">Student / Emerging Educator</span>
+            </div>
+          </div>
+          <div class="expert-card-body">
+            <div class="context-label">Role Context</div>
+            <p>Currently training as an educator, with a fitness background. Provides the perspective of the near-future classroom practitioner: someone who will implement these types of interventions as a first-year teacher, without established habits or resistant prior practice.</p>
+            <div class="context-label">Key Contribution</div>
+            <p>Identified the critical gap between idealized intervention design and what a new teacher can realistically implement without additional support. Advocated strongly for the scalable, modular format rather than a single comprehensive program.</p>
+          </div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-label">Interview Recording — Amiris Pérez</div>
+          <div class="video-duration">~30 minutes · Recorded April 2026</div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="box-label">Core Position</div>
+          <p>"As someone about to enter the classroom, what I need is something concrete. A lesson I can pick up and run. If the intervention has four components and I can start with just one, that's realistic. If I have to do all four or none, most new teachers will do none."</p>
+        </div>
+        <div class="quote-block">
+          <blockquote>"Lo de la brecha intención-acción lo entiendo completamente. Yo misma sé que debería comer mejor. El problema es la 'fricción del sistema': lo sano tarda más, cuesta más, y está menos disponible. Eso no lo resuelve la educación sola — pero la educación puede hacer que el alumno lo vea y lo demande."</blockquote>
+          <cite>Amiris Pérez · Interview, April 2026</cite>
+        </div>
+        <div class="info-box green-box" style="margin-top:16px;">
+          <div class="box-label">Impact on Intervention Design</div>
+          <p>Reinforced the modular "start with A, add B/C/D progressively" framing. The intervention is now explicitly designed as a scalable stack — schools can adopt one component in Year 1 and expand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONVERGENCE THEMES ─────────────────────────────────── -->
+  <section class="section" id="themes">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">
+        <span class="label">Cross-Expert Analysis</span>
+        Convergence Across All Five Voices
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <p class="lead">
+      Five independent experts from different roles — university research, school administration, classroom teaching, and student practice — converged on the same core themes without being primed to do so.
+    </p>
+
+    <div class="theme-list">
+      <div class="theme-item">
+        <div class="theme-item-header">
+          <div class="theme-name">The barrier is structural, not motivational</div>
+          <div>
+            <div class="convergence-label">Convergence 5/5</div>
+            <div class="convergence-dots">
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-desc">All five experts independently stated that the gap between intention and action at nanostores is driven by environmental and structural factors — price, availability, time pressure — not by lack of awareness or willpower. This matches both the R²=0.032 regression result and the AUC=0.55 ML finding.</div>
+      </div>
+
+      <div class="theme-item">
+        <div class="theme-item-header">
+          <div class="theme-name">Teacher training is the non-negotiable leverage point</div>
+          <div>
+            <div class="convergence-label">Convergence 4/5</div>
+            <div class="convergence-dots">
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-desc">Four of five experts specifically called out teacher preparation as the make-or-break factor. Without CPD (Component C), all other components become unreliable. This validated the 8h+4h training investment as essential, not optional.</div>
+      </div>
+
+      <div class="theme-item">
+        <div class="theme-item-header">
+          <div class="theme-name">12–15 is the right age window</div>
+          <div>
+            <div class="convergence-label">Convergence 5/5</div>
+            <div class="convergence-dots">
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-desc">All five agreed that early adolescence — when students begin making independent purchases and habits are forming — is the highest-leverage point for a school-based intervention. Later is less effective; earlier lacks the purchasing autonomy that makes the lesson experiential.</div>
+      </div>
+
+      <div class="theme-item">
+        <div class="theme-item-header">
+          <div class="theme-name">Family engagement must respect time constraints</div>
+          <div>
+            <div class="convergence-label">Convergence 4/5</div>
+            <div class="convergence-dots">
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot filled strong"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-desc">Four experts warned that family-facing components will fail if they feel like homework or add burden to working-class households. The monthly cadence and "invitation" framing of Component D came directly from this consensus.</div>
+      </div>
+
+      <div class="theme-item">
+        <div class="theme-item-header">
+          <div class="theme-name">NEM curriculum is adequate; implementation is the gap</div>
+          <div>
+            <div class="convergence-label">Convergence 3/5</div>
+            <div class="convergence-dots">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+        <div class="theme-desc">Three experts from the education sector confirmed that the NEM's Vida Saludable axis theoretically supports this intervention without curriculum reform — the problem is under-implementation, not policy absence. This supports the "no new subject required" design constraint.</div>
+      </div>
+    </div>
+
+    <div class="honesty-box">
+      <div class="hb-label">Epistemic Honesty — Limitations of Qualitative Validation</div>
+      <p><strong>Selection note:</strong> Experts were identified through professional networks accessible to the team. This introduces potential sampling bias toward perspectives that are sympathetic to education-based interventions. We cannot claim this sample represents the full range of expert opinion on nanostore health interventions.</p>
+      <p><strong>Anchoring risk:</strong> Despite our protocol to withhold findings, some experts may have been influenced by the framing of our questions. Quotes and summaries above represent our interpretation of their positions and have not been member-checked.</p>
+      <p><strong>What this validates:</strong> The expert interviews provide qualitative triangulation that the structural diagnosis is credible, the intervention design is feasible, and the implementation risks (teacher training, family engagement, modular rollout) are real and addressable. They do not replace the quantitative evidence; they complement it.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <strong>MIT LiftLab 2026</strong> &nbsp;·&nbsp; Fernanda Ita &nbsp;·&nbsp; Alexis Marcos &nbsp;·&nbsp; Carlos Torres &nbsp;·&nbsp; Tec de Monterrey Campus SLP
+</footer>
+
+<!-- ═══════════════════════ BACK TO TOP ══════════════════ -->
+<a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
+</body>
+</html>
